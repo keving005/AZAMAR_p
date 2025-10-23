@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="CITA MEDICA"
+            android:textColor="#6C3483"
+            android:textSize="18sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="115dp"
+            android:layout_height="107dp"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:id="@+id/miImagen"
+                android:layout_width="78dp"
+                android:layout_height="73dp"
+                android:src="@drawable/agua" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etNombrePaciente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del paciente"
+            android:text="Kevin"
+            android:enabled="false"
+            android:layout_marginBottom="16dp" />
+
+        <Spinner
+            android:id="@+id/spEspecialista"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/etFechaCita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Seleccionar Fecha"
+            android:focusable="false"
+            android:clickable="true"
+            android:drawableEnd="@android:drawable/ic_menu_today"
+            android:layout_marginBottom="16dp"
+            android:inputType="none" />
+
+        <EditText
+            android:id="@+id/etHoraCita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Seleccionar Hora"
+            android:focusable="false"
+            android:clickable="true"
+            android:drawableEnd="@android:drawable/ic_lock_idle_alarm"
+            android:layout_marginBottom="16dp"
+            android:inputType="none" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Quieres recibir notificaciones?"
+            android:layout_marginTop="16dp"/>
+
+        <RadioGroup
+            android:id="@+id/cbNotificaciones"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <RadioButton
+                android:id="@+id/rbNotiSi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sí"/>
+
+            <RadioButton
+                android:id="@+id/rbNotiNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No"
+                android:layout_marginStart="16dp"/>
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/etTipoCita"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tipo de cita"
+            android:layout_marginBottom="24dp"
+            android:inputType="text" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnGuardar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Guardar"
+                android:backgroundTint="#6C3483"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnHistorial"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="Historial"
+                android:backgroundTint="#3498DB"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnSalir"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Salir"
+                android:backgroundTint="#E74C3C"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvHistorial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Historial de citas:"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvCitas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="(Sin registros aún)"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calificación del sistema de citas"
+            android:layout_marginTop="16dp"/>
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:stepSize="1.0"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+</ScrollView>
