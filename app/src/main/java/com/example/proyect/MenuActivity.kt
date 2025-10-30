@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.appproy.dao.citaDAO
 import com.example.proyect.db.CitaDBHelper
 import com.example.appproy.model.Cita
+import com.example.proyect.model.UbicacionActivity
 import java.util.Calendar
 import java.util.Locale
 
@@ -83,11 +84,17 @@ class MenuActivity : AppCompatActivity() {
         })
 
         // Botón Salir
-        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->b
+        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->
             val intent = Intent(this@MenuActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
         })
+
+        val btnVerUbicacion = findViewById<Button>(R.id.btnVerUbicacion)
+        btnVerUbicacion.setOnClickListener {
+            val intent = Intent(this@MenuActivity, UbicacionActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun guardarCita() {
