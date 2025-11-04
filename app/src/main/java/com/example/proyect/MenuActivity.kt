@@ -18,6 +18,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.appproy.dao.citaDAO
 import com.example.proyect.db.CitaDBHelper
 import com.example.appproy.model.Cita
+
+// --- 1. AÑADIR IMPORTACIONES DE FIREBASE ---
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+// --- Fin de importaciones de Firebase ---
+
 import java.util.Calendar
 import java.util.Locale
 
@@ -38,6 +47,10 @@ class MenuActivity : AppCompatActivity() {
     var etFechaCita: EditText? = null
     var etHoraCita: EditText? = null
 
+    // --- 2. DECLARAR VARIABLES DE FIREBASE ---
+    private lateinit var auth: FirebaseAuth
+    private lateinit var db: FirebaseFirestore
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
@@ -45,10 +58,16 @@ class MenuActivity : AppCompatActivity() {
         val dbHelper = CitaDBHelper(this)
         citaDAO = citaDAO(dbHelper)
 
+        // --- 3. INICIALIZAR FIREBASE ---
+        auth = Firebase.auth
+        db = Firebase.firestore
+
+        // (Aquí sigue tu código de inicialización de vistas...)
         etNombrePaciente = findViewById(R.id.etNombrePaciente)
         etTipoCita = findViewById(R.id.etTipoCita)
         spEspecialista = findViewById(R.id.spEspecialista)
         cbNotificaciones = findViewById(R.id.cbNotificaciones)
+        // ... (el resto de tus findViewById)
         rbNotiSi = findViewById(R.id.rbNotiSi)
         rbNotiNo = findViewById(R.id.rbNotiNo)
         btnGuardar = findViewById(R.id.btnGuardar)
@@ -56,8 +75,6 @@ class MenuActivity : AppCompatActivity() {
         btnHistorial = findViewById(R.id.btnHistorial)
         tvHistorial = findViewById(R.id.tvHistorial)
         tvCitas = findViewById(R.id.tvCitas)
-
-        // FECHA Y HORA
         etFechaCita = findViewById(R.id.etFechaCita)
         etHoraCita = findViewById(R.id.etHoraCita)
 
@@ -83,13 +100,58 @@ class MenuActivity : AppCompatActivity() {
         })
 
         // Botón Salir
-        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->b
+        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->
+            // --- CERRAR SESIÓN DE FIREBASE AL SALIR ---
+            auth.signOut() // Esto cierra la sesión del usuario
             val intent = Intent(this@MenuActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
         })
+
+        // --- 4. LLAMAR A LA FUNCIÓN PARA CARGAR EL NOMBRE ---
+        cargarDatosDelUsuario()
     }
 
+    // --- 5. NUEVA FUNCIÓN PARA OBTENER DATOS DE FIRESTORE ---
+    private fun cargarDatosDelUsuario() {
+        // Obtenemos el ID único (uid) del usuario que inició sesión
+        val uid = auth.currentUser?.uid
+
+        // Nos aseguramos de que haya un usuario logueado
+        if (uid != null) {
+            // Creamos la referencia a su documento en Firestore
+            // (Usamos la misma ruta que en RegistroActivity: "usuarios" -> uid)
+            val userRef = db.collection("usuarios").document(uid)
+
+            // Obtenemos el documento
+            userRef.get()
+                .addOnSuccessListener { document ->
+                    if (document != null && document.exists()) {
+                        // El documento existe, sacamos el campo "nombre"
+                        val nombre = document.getString("nombre")
+
+                        // ¡Ponemos el nombre en el EditText!
+                        etNombrePaciente?.setText(nombre)
+
+                    } else {
+                        // Esto no debería pasar si el registro salió bien
+                        Toast.makeText(this, "No se encontró el perfil.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    // Mostramos un error si falla la conexión a Firestore
+                    Toast.makeText(this, "Error al cargar datos: ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            // Si por alguna razón no hay usuario, lo mandamos al Login
+            val intent = Intent(this@MenuActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    // --- (AQUÍ VA TODO TU CÓDIGO ANTERIOR: guardarCita, mostrarHistorial, etc.) ---
+    // ... (no he modificado nada de tu lógica de citas) ...
     private fun guardarCita() {
         val nombre = etNombrePaciente!!.getText().toString()
         val tipoCita = etTipoCita!!.getText().toString()
