@@ -6,29 +6,34 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="¡Hola! Estás a un paso de gestionar tu salud"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/quicksandbold" />
 
-    <LinearLayout
-        android:layout_width="220dp"
-        android:layout_height="211dp"
-        android:elevation="4dp"
-        android:orientation="vertical"
-        android:padding="24dp">
-        <ImageView
-            android:id="@+id/miImagen"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:src="@drawable/pan" />
-    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/miImagen"
+        android:layout_width="315dp"
+        android:layout_height="291dp"
+        android:src="@drawable/iniciouno" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:text="INICIAR SESIÓN"
+        android:text="Inicia sesión para agendar tu cita médica"
         android:textAlignment="center"
-        android:textColor="#6C3483"
+        android:textColor="#000000"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:fontFamily="@font/quicksandbold" />
 
     <EditText
         android:id="@+id/etUsuario"

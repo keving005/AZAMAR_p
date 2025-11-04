@@ -83,7 +83,7 @@ class MenuActivity : AppCompatActivity() {
         })
 
         // Botón Salir
-        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->b
+        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->
             val intent = Intent(this@MenuActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
