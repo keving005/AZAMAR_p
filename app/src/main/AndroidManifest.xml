@@ -16,6 +16,9 @@
             android:name=".model.UbicacionActivity"
             android:exported="false" />
         <activity
+            android:name=".RegistroActivity"
+            android:exported="false" />
+        <activity
             android:name=".MenuActivity"
             android:exported="false" />
         <activity

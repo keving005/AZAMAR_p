@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="CREAR CUENTA"
+        android:textAlignment="center"
+        android:textColor="#6C3483"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/etNombreRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Nombre completo"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/etEmailRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/etContrasenaRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:hint="Contraseña (mín. 6 caracteres)"
+        android:inputType="textPassword" />
+    <Button
+        android:id="@+id/btnRegistrarUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#6C3483"
+        android:text="REGISTRARME"
+        android:textColor="#FFFFFF" />
+</LinearLayout>
