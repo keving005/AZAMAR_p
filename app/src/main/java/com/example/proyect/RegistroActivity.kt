@@ -1,42 +1,36 @@
-package com.example.proyect
+package com.example.proyect // Asegúrate que este sea tu paquete
 
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-// Importaciones de Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+
+// 1. IMPORTAR LIBRERÍAS DE VOLLEY
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 class RegistroActivity : AppCompatActivity() {
 
-    // Declarar vistas
     private lateinit var etNombre: EditText
     private lateinit var etEmail: EditText
     private lateinit var etContrasena: EditText
     private lateinit var btnRegistrar: Button
 
-    // Declarar Firebase
-    private lateinit var auth: FirebaseAuth
-    private lateinit var db: FirebaseFirestore
+    // --- 2. ¡TU IP YA ESTÁ CONFIGURADA! ---
+    private val IP_SERVIDOR = "http://192.168.1.78:8000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registro) // Usa el nuevo layout
+        setContentView(R.layout.activity_registro)
 
         // Inicializar vistas
-        etNombre = findViewById(R.id.etNombreRegistro)
+        etNombre = findViewById(R.id.etNombreRegistro) // Asegúrate que los IDs coincidan
         etEmail = findViewById(R.id.etEmailRegistro)
         etContrasena = findViewById(R.id.etContrasenaRegistro)
         btnRegistrar = findViewById(R.id.btnRegistrarUsuario)
-
-        // Inicializar Firebase
-        auth = Firebase.auth
-        db = Firebase.firestore
 
         // Listener del botón
         btnRegistrar.setOnClickListener {
@@ -44,67 +38,61 @@ class RegistroActivity : AppCompatActivity() {
             val email = etEmail.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()
 
-            // Validaciones
             if (nombre.isEmpty() || email.isEmpty() || contrasena.isEmpty()) {
                 Toast.makeText(this, "Por favor, llena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if (contrasena.length < 6) {
-                Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
 
-            // Llamar a la función de registro
-            crearUsuarioConFirebase(nombre, email, contrasena)
+            registrarUsuarioConVolley(nombre, email, contrasena)
         }
     }
 
-    private fun crearUsuarioConFirebase(nombre: String, email: String, contrasena: String) {
+    private fun registrarUsuarioConVolley(nombre: String, email: String, contrasena: String) {
 
-        // 1. CREAR USUARIO EN AUTHENTICATION
-        auth.createUserWithEmailAndPassword(email, contrasena)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(baseContext, "Usuario creado exitosamente.", Toast.LENGTH_SHORT).show()
+        val url = "$IP_SERVIDOR/registrar"
 
-                    val userId = auth.currentUser?.uid // Obtener el ID del nuevo usuario
+        // Creamos el objeto JSON que FastAPI espera (coincide con UserCreate)
+        val jsonBody = JSONObject()
+        jsonBody.put("nombre", nombre)
+        jsonBody.put("email", email)
+        jsonBody.put("password", contrasena)
 
-                    // 2. GUARDAR DATOS EXTRA EN FIRESTORE
-                    if (userId != null) {
-                        guardarDatosDeUsuarioEnFirestore(userId, nombre, email)
+        // Creamos la petición POST de Volley
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, jsonBody,
+
+            // Listener de ÉXITO (El servidor respondió bien - código 200)
+            { response ->
+                val nombreUsuario = response.getString("nombre")
+                Toast.makeText(
+                    this,
+                    "¡Bienvenido, $nombreUsuario! Registro exitoso.",
+                    Toast.LENGTH_LONG
+                ).show()
+                finish() // Cierra esta pantalla y vuelve al Login
+            },
+
+            // Listener de ERROR (El servidor respondió mal - código 400, 500, etc.)
+            { error ->
+                // Intentamos leer el mensaje de error de FastAPI
+                val errorMsg = error.networkResponse?.let {
+                    try {
+                        val data = String(it.data)
+                        JSONObject(data).getString("detail") // Capturamos el "detail"
+                    } catch (e: Exception) {
+                        error.message // Si falla, usamos el error genérico
                     }
+                } ?: error.message
 
-                } else {
-                    // Falló el registro en Authentication
-                    Toast.makeText(
-                        baseContext,
-                        "Falló el registro: ${task.exception?.message}",
-                        Toast.LENGTH_LONG,
-                    ).show()
-                }
+                Toast.makeText(
+                    this,
+                    "Error en el registro: $errorMsg",
+                    Toast.LENGTH_LONG
+                ).show()
             }
-    }
-
-    private fun guardarDatosDeUsuarioEnFirestore(uid: String, nombre: String, email: String) {
-
-        // Crear un "mapa" de datos
-        val userData = hashMapOf(
-            "nombre" to nombre,
-            "email" to email
-            // Aquí puedes añadir tu "numero_paciente" (etMatricula) si lo pides en este formulario
         )
 
-        // Guardar en la colección "usuarios" con el ID (uid) del usuario
-        db.collection("usuarios").document(uid)
-            .set(userData)
-            .addOnSuccessListener {
-                Toast.makeText(baseContext, "Datos guardados. ¡Bienvenido!", Toast.LENGTH_SHORT).show()
-
-                // Opcional: Cierra esta actividad y vuelve al Login
-                finish()
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(baseContext, "Error al guardar datos: ${e.message}", Toast.LENGTH_LONG).show()
-            }
+        // Añadimos la petición a la cola de Volley para que se ejecute
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
     }
 }

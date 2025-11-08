@@ -1,4 +1,4 @@
-package com.example.proyect
+package com.example.proyect // Asegúrate que este sea tu paquete
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -21,11 +21,16 @@ import com.example.appproy.model.Cita
 import java.util.Calendar
 import java.util.Locale
 
+// --- ¡TODAS LAS IMPORTACIONES DE FIREBASE SE FUERON! ---
+
 class MenuActivity : AppCompatActivity() {
+
+    // --- (Aquí van todas tus variables de vistas: etNombrePaciente, spEspecialista, etc.) ---
     private lateinit var citaDAO: citaDAO
     var etNombrePaciente: EditText? = null
     var etTipoCita: EditText? = null
     var spEspecialista: Spinner? = null
+    // ... (el resto de tus variables)
     var cbNotificaciones: RadioGroup? = null
     var rbNotiSi: RadioButton? = null
     var rbNotiNo: RadioButton? = null
@@ -34,9 +39,12 @@ class MenuActivity : AppCompatActivity() {
     var btnHistorial: Button? = null
     var tvHistorial: TextView? = null
     var tvCitas: TextView? = null
-
     var etFechaCita: EditText? = null
     var etHoraCita: EditText? = null
+
+    // --- ¡LAS VARIABLES DE FIREBASE SE FUERON! ---
+    // private lateinit var auth: FirebaseAuth
+    // private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +53,7 @@ class MenuActivity : AppCompatActivity() {
         val dbHelper = CitaDBHelper(this)
         citaDAO = citaDAO(dbHelper)
 
+        // --- (Aquí va todo tu código de 'findViewById') ---
         etNombrePaciente = findViewById(R.id.etNombrePaciente)
         etTipoCita = findViewById(R.id.etTipoCita)
         spEspecialista = findViewById(R.id.spEspecialista)
@@ -56,53 +65,64 @@ class MenuActivity : AppCompatActivity() {
         btnHistorial = findViewById(R.id.btnHistorial)
         tvHistorial = findViewById(R.id.tvHistorial)
         tvCitas = findViewById(R.id.tvCitas)
-
-        // FECHA Y HORA
         etFechaCita = findViewById(R.id.etFechaCita)
         etHoraCita = findViewById(R.id.etHoraCita)
 
-        // diálogos de fecha y hora
+        // --- ¡LA INICIALIZACIÓN DE FIREBASE SE FUE! ---
+
+        // --- CÓDIGO NUEVO PARA OBTENER EL NOMBRE ---
+        // Recuperamos el nombre que 'MainActivity' nos envió
+        val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO")
+        if (nombreUsuario != null) {
+            etNombrePaciente?.setText(nombreUsuario)
+        } else {
+            etNombrePaciente?.setText("Usuario") // Un valor por defecto si algo falla
+        }
+
+        // --- ¡LA LLAMADA A 'cargarDatosDelUsuario()' SE FUE! ---
+
+        // (Aquí sigue tu código de 'Spinner', 'DatePicker', etc...)
         etFechaCita!!.setOnClickListener { mostrarDatePicker() }
         etHoraCita!!.setOnClickListener { mostrarTimePicker() }
-
-        // Spinner doctores
         val especialistas =
             arrayOf<String?>("Médico General", "Pediatra", "Cardiólogo", "Dentista", "Ginecólogo")
         val adapter =
             ArrayAdapter<String?>(this, android.R.layout.simple_spinner_item, especialistas)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spEspecialista!!.setAdapter(adapter)
-
         btnGuardar!!.setOnClickListener(View.OnClickListener{ v: View? ->
             guardarCita()
         })
-
-        // Botón Historial (CRUD)
         btnHistorial!!.setOnClickListener(View.OnClickListener { v: View? ->
             mostrarHistorialConAcciones()
         })
 
-        // Botón Salir
-        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->b
+        // --- BOTÓN SALIR SIMPLIFICADO ---
+        // (Ya no necesita 'auth.signOut()')
+        btnSalir!!.setOnClickListener(View.OnClickListener { v: View? ->v
             val intent = Intent(this@MenuActivity, MainActivity::class.java)
             startActivity(intent)
             finish()
         })
     }
 
+    // --- ¡TODA LA FUNCIÓN 'cargarDatosDelUsuario()' DE FIREBASE SE FUE! ---
+
+    // --- (El resto de tus funciones: guardarCita, mostrarHistorial, mostrarDatePicker, etc.
+    // ---  ¡SE QUEDAN EXACTAMENTE IGUAL!) ---
+
     private fun guardarCita() {
+        // ... (tu código de guardarCita no cambia) ...
         val nombre = etNombrePaciente!!.getText().toString()
         val tipoCita = etTipoCita!!.getText().toString()
         val especialista = spEspecialista!!.getSelectedItem().toString()
         val fecha = etFechaCita!!.getText().toString()
         val hora = etHoraCita!!.getText().toString()
 
-        // Validación de campos
         if (tipoCita.isEmpty() || fecha.isEmpty() || hora.isEmpty() || nombre.isEmpty()) {
             Toast.makeText(this, "Debe completar todos los campos.", Toast.LENGTH_LONG).show()
             return
         }
-
         val nuevaCita = Cita(
             nombrePaciente = nombre,
             especialista = especialista,
@@ -110,12 +130,9 @@ class MenuActivity : AppCompatActivity() {
             hora = hora,
             tipoCita = tipoCita
         )
-
         val idInsertado = citaDAO.insertar(nuevaCita)
-
         if (idInsertado > 0) {
             Toast.makeText(this, "Cita guardada con ID: $idInsertado", Toast.LENGTH_SHORT).show()
-            // Limpiar campos
             etTipoCita!!.setText("")
             etFechaCita!!.setText("")
             etHoraCita!!.setText("")
@@ -125,23 +142,17 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun mostrarHistorialConAcciones() {
+        // ... (tu código de mostrarHistorialConAcciones no cambia) ...
         val listaCitas = citaDAO.listar()
-
-        // Ocultamos los TextViews estáticos
         tvHistorial!!.setVisibility(TextView.GONE)
         tvCitas!!.setVisibility(TextView.GONE)
-
         if (listaCitas.isEmpty()) {
             Toast.makeText(this, "No hay citas registradas en el historial.", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // AlertDialog
         val citasDisplay = listaCitas.map { cita ->
             "ID ${cita.id}: ${cita.nombrePaciente} - ${cita.especialista} (${cita.fecha})"
         }.toTypedArray()
-
-        // AlertDialog interactivo
         AlertDialog.Builder(this)
             .setTitle("Historial de Citas Médicas")
             .setItems(citasDisplay) { _, which ->
@@ -153,15 +164,15 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun mostrarOpcionesCita(cita: Cita) {
+        // ... (tu código de mostrarOpcionesCita no cambia) ...
         val opciones = arrayOf("Ver Detalles/Consultar", "Editar/Actualizar", "Eliminar Cita")
-
         AlertDialog.Builder(this)
             .setTitle("Opciones para Cita ID ${cita.id}")
             .setItems(opciones) { _, which ->
                 when (which) {
                     0 -> mostrarDetalles(cita)
-                    1 -> mostrarDialogoEdicion(cita) // Llama a la edición completa (U)
-                    2 -> confirmarYEliminarCita(cita) // Llama a la eliminación (D)
+                    1 -> mostrarDialogoEdicion(cita)
+                    2 -> confirmarYEliminarCita(cita)
                 }
             }
             .setNegativeButton("Cancelar", null)
@@ -169,6 +180,7 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun mostrarDetalles(cita: Cita) {
+        // ... (tu código de mostrarDetalles no cambia) ...
         AlertDialog.Builder(this)
             .setTitle("Detalles de Cita")
             .setMessage(
@@ -184,60 +196,43 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun mostrarDialogoEdicion(citaOriginal: Cita) {
-        // layout personalizado
+        // ... (tu código de mostrarDialogoEdicion no cambia) ...
         val dialogView = layoutInflater.inflate(R.layout.dialog_editar_cita, null)
-
-        // nuevos campos del diálogo
         val spEspecialistaEdit = dialogView.findViewById<Spinner>(R.id.spEspecialista_edit)
         val etTipoCitaEdit = dialogView.findViewById<EditText>(R.id.etTipoCita_edit)
         val etFechaCitaEdit = dialogView.findViewById<EditText>(R.id.etFechaCita_edit)
         val etHoraCitaEdit = dialogView.findViewById<EditText>(R.id.etHoraCita_edit)
-
-        // nuevo Especialista
         val especialistas =
             arrayOf<String?>("Médico General", "Pediatra", "Cardiólogo", "Dentista", "Ginecólogo")
         val adapter = ArrayAdapter<String?>(this, android.R.layout.simple_spinner_item, especialistas)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spEspecialistaEdit.adapter = adapter
-
-        //  Precargar datos de la cita original
         etTipoCitaEdit.setText(citaOriginal.tipoCita)
         etFechaCitaEdit.setText(citaOriginal.fecha)
         etHoraCitaEdit.setText(citaOriginal.hora)
-
-        // Seleccionar el especialista correcto
         val especialistaIndex = especialistas.indexOf(citaOriginal.especialista)
         if (especialistaIndex >= 0) {
             spEspecialistaEdit.setSelection(especialistaIndex)
         }
-
         etFechaCitaEdit.setOnClickListener { mostrarDatePickerGeneric(etFechaCitaEdit) }
         etHoraCitaEdit.setOnClickListener { mostrarTimePickerGeneric(etHoraCitaEdit) }
-
-        //  Construir y mostrar el diálogo
         AlertDialog.Builder(this)
             .setTitle("Editar Cita (ID ${citaOriginal.id})")
             .setMessage("Paciente: ${citaOriginal.nombrePaciente}")
             .setView(dialogView)
             .setPositiveButton("Actualizar") { _, _ ->
-                // Capturar los nuevos valores
                 val nuevoTipoCita = etTipoCitaEdit.text.toString()
                 val nuevoEspecialista = spEspecialistaEdit.selectedItem.toString()
                 val nuevaFecha = etFechaCitaEdit.text.toString()
                 val nuevaHora = etHoraCitaEdit.text.toString()
-
                 if (nuevoTipoCita.isNotEmpty() && nuevaFecha.isNotEmpty() && nuevaHora.isNotEmpty()) {
-                    // Crear una copia de la cita con los datos editados
                     val citaActualizada = citaOriginal.copy(
                         tipoCita = nuevoTipoCita,
                         especialista = nuevoEspecialista,
                         fecha = nuevaFecha,
                         hora = nuevaHora
                     )
-
-                    // Ejecutar la acción de actualización
                     val filasActualizadas = citaDAO.actualizar(citaActualizada)
-
                     if (filasActualizadas > 0) {
                         Toast.makeText(this, "Cita ID ${citaOriginal.id} actualizada completamente.", Toast.LENGTH_LONG).show()
                         mostrarHistorialConAcciones()
@@ -253,17 +248,15 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun confirmarYEliminarCita(cita: Cita) {
+        // ... (tu código de confirmarYEliminarCita no cambia) ...
         AlertDialog.Builder(this)
             .setTitle("Confirmar Eliminación")
             .setMessage("¿Estás seguro de que deseas eliminar la cita de ${cita.nombrePaciente}?")
             .setPositiveButton("Sí, Eliminar") { _, _ ->
                 val id = cita.id
-                // El operador ?: 0 es una verificación de seguridad
                 val filasAfectadas = citaDAO.eliminar(id ?: 0)
-
                 if (filasAfectadas > 0) {
                     Toast.makeText(this, "Cita de ID $id eliminada correctamente.", Toast.LENGTH_SHORT).show()
-                    // Recargar la lista después de la eliminación
                     mostrarHistorialConAcciones()
                 } else {
                     Toast.makeText(this, "Error: No se pudo eliminar la cita.", Toast.LENGTH_SHORT).show()
@@ -274,39 +267,38 @@ class MenuActivity : AppCompatActivity() {
     }
 
     private fun mostrarDatePicker() {
+        // ... (tu código de mostrarDatePicker no cambia) ...
         etFechaCita?.let { mostrarDatePickerGeneric(it) }
     }
 
-    // Función para el formulario principal
     private fun mostrarTimePicker() {
+        // ... (tu código de mostrarTimePicker no cambia) ...
         etHoraCita?.let { mostrarTimePickerGeneric(it) }
     }
 
     private fun mostrarDatePickerGeneric(editText: EditText) {
+        // ... (tu código de mostrarDatePickerGeneric no cambia) ...
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
         val day = c.get(Calendar.DAY_OF_MONTH)
-
         val dpd = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
             val fechaSeleccionada = String.format(Locale.getDefault(), "%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear)
             editText.setText(fechaSeleccionada)
         }, year, month, day)
-
         dpd.datePicker.minDate = System.currentTimeMillis() - 1000
         dpd.show()
     }
 
     private fun mostrarTimePickerGeneric(editText: EditText) {
+        // ... (tu código de mostrarTimePickerGeneric no cambia) ...
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR_OF_DAY)
         val minute = c.get(Calendar.MINUTE)
-
         val tpd = TimePickerDialog(this, { _, selectedHour, selectedMinute ->
             val horaSeleccionada = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute)
             editText.setText(horaSeleccionada)
         }, hour, minute, true)
-
         tpd.show()
     }
 }
