@@ -1,93 +1,112 @@
-package com.example.proyect
+package com.example.proyect // Asegúrate que este sea tu paquete
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-// 1. IMPORTAR FIREBASE AUTH
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
-// --- AÑADIDO: IMPORTAR TEXTVIEW ---
-// Necesitas esto para encontrar el 'tvIrARegistro'
-import android.widget.TextView
+// 1. IMPORTAR LIBRERÍAS DE VOLLEY
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    // Es mejor usar 'lateinit var' que tipos nulos '?'
     private lateinit var etEmail: EditText // Corresponde a tu etUsuario
     private lateinit var etContrasena: EditText
     private lateinit var btnAceptar: Button
 
-    // 2. DECLARAR FIREBASE AUTH
-    private lateinit var auth: FirebaseAuth
+    // --- 2. ¡TU IP YA ESTÁ CONFIGURADA! ---
+    private val IP_SERVIDOR = "http://192.168.1.78:8000"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 3. INICIALIZAR VISTAS
-        // Asegúrate de que los IDs coincidan con tu XML
-        etEmail = findViewById(R.id.etUsuario) // Usamos etUsuario para el email
+        // Inicializar vistas
+        etEmail = findViewById(R.id.etUsuario)
         etContrasena = findViewById(R.id.etContrasena)
         btnAceptar = findViewById(R.id.btnAceptar)
 
-        // 4. INICIALIZAR FIREBASE AUTH
-        auth = Firebase.auth
-
-        // 5. LÓGICA DE LOGIN (Esto ya lo tenías)
+        // Lógica del botón de Login
         btnAceptar.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()
 
-            // Validación simple
             if (email.isEmpty() || contrasena.isEmpty()) {
-                Toast.makeText(
-                    this,
-                    "Por favor, ingresa email y contraseña.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener // Detiene la ejecución si está vacío
+                Toast.makeText(this, "Ingresa email y contraseña.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
 
-            // --- INICIAR SESIÓN CON FIREBASE ---
-            auth.signInWithEmailAndPassword(email, contrasena)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // ¡Login exitoso!
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Inicio de sesión exitoso.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Navega a MenuActivity
-                        val intent = Intent(this@MainActivity, MenuActivity::class.java)
-                        startActivity(intent)
-                        finish() // Cierra MainActivity para que no pueda volver atrás
-
-                    } else {
-                        // Si el login falla, muestra el error de Firebase
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Error: ${task.exception?.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
+            // Llamar a la función de login con Volley
+            loginConVolley(email, contrasena)
         }
 
-        // --- 6. AÑADIDO: CÓDIGO PARA IR AL REGISTRO ---
-        // (Asegúrate de tener el TextView con id 'tvIrARegistro' en tu activity_main.xml)
-
+        // Lógica del botón de ir a Registro (Esta se queda igual)
         val tvIrARegistro = findViewById<TextView>(R.id.tvIrARegistro)
         tvIrARegistro.setOnClickListener {
             val intent = Intent(this, RegistroActivity::class.java)
             startActivity(intent)
         }
-        // --- FIN DE LA SECCIÓN AÑADIDA ---
+    }
+
+    private fun loginConVolley(email: String, contrasena: String) {
+
+        // a. URL del endpoint de login de FastAPI
+        val url = "$IP_SERVIDOR/login"
+
+        // b. JSON que espera FastAPI (coincide con UserLogin en schemas.py)
+        val jsonBody = JSONObject()
+        jsonBody.put("email", email)
+        jsonBody.put("password", contrasena)
+
+        // c. Petición POST de Volley
+        val jsonObjectRequest = JsonObjectRequest(
+            Request.Method.POST, url, jsonBody,
+
+            // d. Listener de ÉXITO
+            { response ->
+                // Obtenemos el nombre que nos devuelve el servidor
+                val nombreUsuario = response.getString("nombre")
+                Toast.makeText(
+                    this,
+                    "¡Bienvenido de nuevo, $nombreUsuario!",
+                    Toast.LENGTH_LONG
+                ).show()
+
+                // Navega a MenuActivity
+                // ¡IMPORTANTE! Pasamos el nombre a la siguiente pantalla
+                val intent = Intent(this@MainActivity, MenuActivity::class.java)
+                intent.putExtra("NOMBRE_USUARIO", nombreUsuario) // Pasamos el nombre
+                startActivity(intent)
+                finish()
+            },
+
+            // e. Listener de ERROR
+            { error ->
+                val errorMsg = error.networkResponse?.let {
+                    try {
+                        val data = String(it.data)
+                        JSONObject(data).getString("detail") // El error de FastAPI
+                    } catch (e: Exception) {
+                        error.message
+                    }
+                } ?: error.message
+
+                Toast.makeText(
+                    this,
+                    "Error: $errorMsg",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        )
+
+        // f. Añadir a la cola
+        Volley.newRequestQueue(this).add(jsonObjectRequest)
     }
 }
