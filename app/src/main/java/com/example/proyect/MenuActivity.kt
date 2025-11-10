@@ -67,6 +67,12 @@ class MenuActivity : AppCompatActivity() {
         tvCitas = findViewById(R.id.tvCitas)
         etFechaCita = findViewById(R.id.etFechaCita)
         etHoraCita = findViewById(R.id.etHoraCita)
+        val btnAbrirMapa = findViewById<Button>(R.id.btnAbrirMapa)
+
+        btnAbrirMapa.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+        }
 
         // --- ¡LA INICIALIZACIÓN DE FIREBASE SE FUE! ---
 
@@ -301,4 +307,5 @@ class MenuActivity : AppCompatActivity() {
         }, hour, minute, true)
         tpd.show()
     }
+
 }
