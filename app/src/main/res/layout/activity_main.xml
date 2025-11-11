@@ -6,22 +6,23 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="24dp">
+
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
+        android:fontFamily="@font/quicksandbold"
         android:text="¡Hola! Estás a un paso de gestionar tu salud"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/quicksandbold" />
-
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/miImagen"
-        android:layout_width="315dp"
-        android:layout_height="291dp"
+        android:layout_width="235dp"
+        android:layout_height="95dp"
         android:src="@drawable/iniciouno" />
 
     <TextView
