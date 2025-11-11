@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
         android:background="#FFFFFF">
 
+        <!-- Título -->
         <TextView
             android:id="@+id/tvTituloMapa"
             android:layout_width="match_parent"
@@ -22,20 +24,38 @@
             android:gravity="center"
             android:layout_marginBottom="12dp" />
 
+        <!-- Imagen del mapa -->
         <ImageView
             android:id="@+id/ivMapa"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_mapmode"/>
+            android:src="@android:drawable/ic_menu_mapmode" />
 
-        <TextView
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardDireccion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dirección: Av. Cuauhtémoc 330, Doctores, Ciudad de México"
-            android:textSize="16sp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#E8F8F5">
 
+            <TextView
+                android:id="@+id/tvDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📍 Av. Cuauhtémoc 330, Doctores, Ciudad de México"
+                android:textSize="18sp"
+                android:textColor="#117864"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:gravity="center"
+                android:fontFamily="sans-serif-medium" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- Botón para abrir Google Maps -->
         <Button
             android:id="@+id/btnComoLlegar"
             android:layout_width="match_parent"
@@ -43,8 +63,10 @@
             android:text="Abrir en Google Maps"
             android:backgroundTint="#2E86C1"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"
+            android:fontFamily="sans-serif-medium" />
 
+        <!-- Botón para regresar -->
         <Button
             android:id="@+id/btnRegresar"
             android:layout_width="match_parent"
@@ -52,7 +74,8 @@
             android:text="Regresar al Menú"
             android:backgroundTint="#A569BD"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium" />
 
     </LinearLayout>
 
