@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
-            android:text="CITA MEDICA"
+            android:text="@string/cita_medica"
             android:textColor="#6C3483"
             android:textSize="18sp"
             android:textStyle="bold"/>
@@ -30,9 +30,10 @@
 
             <ImageView
                 android:id="@+id/miImagen"
-                android:layout_width="78dp"
-                android:layout_height="73dp"
-                android:src="@drawable/agua" />
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/iniciouno"
+                android:contentDescription="@string/foto_perfil" />
         </LinearLayout>
 
         <EditText
@@ -40,8 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nombre del paciente"
-            android:enabled="false"
-            android:layout_marginBottom="16dp" />
+            android:inputType="textPersonName" />
 
         <Spinner
             android:id="@+id/spEspecialista"
