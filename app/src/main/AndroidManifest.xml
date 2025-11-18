@@ -28,15 +28,13 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBR9qWUnYu7aaSpxmRbaonj4OtKg-pPmJ4" />
+            android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
 
         <activity
             android:name=".MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".model.UbicacionActivity"
-            android:exported="false" />
+
         <activity
             android:name=".RegistroActivity"
             android:exported="false" />
