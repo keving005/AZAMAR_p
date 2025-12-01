@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="24dp">
+    tools:context=".MainActivity">
 
-
-    <TextView
+    <LinearLayout
+        android:id="@+id/main_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:visibility="invisible"> <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
@@ -19,61 +24,71 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+        <ImageView
+            android:id="@+id/miImagen"
+            android:layout_width="235dp"
+            android:layout_height="95dp"
+            android:src="@drawable/iniciouno" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="Inicia sesión para agendar tu cita médica"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:fontFamily="@font/quicksandbold" />
+
+        <EditText
+            android:id="@+id/etUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Usuario"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/etMatricula"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="Número de paciente"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/etContrasena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:hint="Contraseña"
+            android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/btnAceptar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#6C3483"
+            android:text="INGRESAR"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/tvIrARegistro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="¿No tienes cuenta? Regístrate aquí"
+            android:textColor="#6C3483"
+            android:textSize="16sp" />
+    </LinearLayout>
+
     <ImageView
-        android:id="@+id/miImagen"
-        android:layout_width="235dp"
-        android:layout_height="95dp"
-        android:src="@drawable/iniciouno" />
-
-    <TextView
+        android:id="@+id/cross_animation_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:text="Inicia sesión para agendar tu cita médica"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:fontFamily="@font/quicksandbold" />
-
-    <EditText
-        android:id="@+id/etUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="Usuario"
-        android:inputType="textEmailAddress" />
-
-    <EditText
-        android:id="@+id/etMatricula"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:hint="Número de paciente"
-        android:inputType="text" />
-
-    <EditText
-        android:id="@+id/etContrasena"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:hint="Contraseña"
-        android:inputType="textPassword" />
-    <Button
-
-        android:id="@+id/btnAceptar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#6C3483"
-        android:text="INGRESAR"
-        android:textColor="#FFFFFF" />
-    <TextView
-        android:id="@+id/tvIrARegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="¿No tienes cuenta? Regístrate aquí"
-        android:textColor="#6C3483"
-        android:textSize="16sp" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:scaleType="centerInside"
+        android:src="@drawable/animated_cross"
+        android:visibility="visible" /> </FrameLayout>

@@ -1,4 +1,4 @@
-package com.example.proyect // Asegúrate que este sea tu paquete
+package com.example.proyect
 
 import android.content.Intent
 import android.os.Bundle
