@@ -1,4 +1,4 @@
-package com.example.proyect // Asegúrate que este sea tu paquete
+package com.example.proyect
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -21,11 +21,10 @@ import com.example.appproy.model.Cita
 import java.util.Calendar
 import java.util.Locale
 
-// --- ¡TODAS LAS IMPORTACIONES DE FIREBASE SE FUERON! ---
 
 class MenuActivity : AppCompatActivity() {
 
-    // --- (Aquí van todas tus variables de vistas: etNombrePaciente, spEspecialista, etc.) ---
+
     private lateinit var citaDAO: citaDAO
     var etNombrePaciente: EditText? = null
     var etTipoCita: EditText? = null
@@ -42,9 +41,7 @@ class MenuActivity : AppCompatActivity() {
     var etFechaCita: EditText? = null
     var etHoraCita: EditText? = null
 
-    // --- ¡LAS VARIABLES DE FIREBASE SE FUERON! ---
-    // private lateinit var auth: FirebaseAuth
-    // private lateinit var db: FirebaseFirestore
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,9 +71,6 @@ class MenuActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // --- ¡LA INICIALIZACIÓN DE FIREBASE SE FUE! ---
-
-        // --- CÓDIGO NUEVO PARA OBTENER EL NOMBRE ---
         // Recuperamos el nombre que 'MainActivity' nos envió
         val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO")
         if (nombreUsuario != null) {
@@ -112,10 +106,6 @@ class MenuActivity : AppCompatActivity() {
         })
     }
 
-    // --- ¡TODA LA FUNCIÓN 'cargarDatosDelUsuario()' DE FIREBASE SE FUE! ---
-
-    // --- (El resto de tus funciones: guardarCita, mostrarHistorial, mostrarDatePicker, etc.
-    // ---  ¡SE QUEDAN EXACTAMENTE IGUAL!) ---
 
     private fun guardarCita() {
         // ... (tu código de guardarCita no cambia) ...

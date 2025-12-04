@@ -16,11 +16,11 @@ import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var etEmail: EditText // Corresponde a tu etUsuario
+    private lateinit var etEmail: EditText
     private lateinit var etContrasena: EditText
     private lateinit var btnAceptar: Button
 
-    // --- 2. ¡TU IP YA ESTÁ CONFIGURADA! ---
+
     private val IP_SERVIDOR = "http://192.168.1.78:8000"
 
 
@@ -28,12 +28,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inicializar vistas
+
         etEmail = findViewById(R.id.etUsuario)
         etContrasena = findViewById(R.id.etContrasena)
         btnAceptar = findViewById(R.id.btnAceptar)
 
-        // Lógica del botón de Login
+
         btnAceptar.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()

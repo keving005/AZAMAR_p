@@ -19,7 +19,7 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var etContrasena: EditText
     private lateinit var btnRegistrar: Button
 
-    // --- 2. ¡TU IP YA ESTÁ CONFIGURADA! ---
+
     private val IP_SERVIDOR = "http://192.168.1.78:8000"
 
     override fun onCreate(savedInstanceState: Bundle?) {
