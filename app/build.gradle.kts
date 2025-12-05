@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -10,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.proyect"
-        minSdk = 36
+        minSdk = 34
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -53,4 +54,7 @@ dependencies {
     implementation("com.android.volley:volley:1.2.1")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 }

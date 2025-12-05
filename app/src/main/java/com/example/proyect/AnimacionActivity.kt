@@ -1,8 +1,7 @@
 package com.example.proyect
 
-// --- 1. ESTOS IMPORTS SON OBLIGATORIOS ---
-import android.content.Intent                 // Para poder cambiar de pantalla
-import android.graphics.drawable.Animatable   // Para detectar la animación
+import android.content.Intent
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,26 +13,23 @@ class AnimacionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_animacion)
 
-        // --- PARTE A: LA ANIMACIÓN ---
+        // 1. Iniciar animación de la imagen (si es animada)
         val imageView = findViewById<ImageView>(R.id.ivAnimacion)
         val drawable = imageView.drawable
-
-        // Verificamos si la imagen es animada (AnimatedVectorDrawable)
         if (drawable is Animatable) {
             drawable.start()
         }
 
-        // --- PARTE B: EL TEMPORIZADOR ---
-        // Usamos Handler con Looper.getMainLooper() para asegurar que corra en la UI
+        // 2. TEMPORIZADOR: Espera 3 segundos (3000ms) y cambia de pantalla
         Handler(Looper.getMainLooper()).postDelayed({
 
-            // Intentamos ir al Login
+            // Ir al Login (MainActivity)
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
 
-            // Cerramos la animación
+            // Cerrar esta pantalla para no volver
             finish()
 
-        }, 3000) // 3 segundos
+        }, 3000)
     }
 }
