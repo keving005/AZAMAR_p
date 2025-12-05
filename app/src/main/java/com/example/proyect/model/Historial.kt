@@ -1,8 +1,8 @@
-package com.example.appproy.model
+package com.example.proyect.model
 
-class Historial (
-    val id : Int? = null,
-    val nombrePaciente : String,
-    val especialista : String,
-    val tipoCita : String
+data class Historial(
+    var id: String = "", // ID de texto para Firebase
+    var nombrePaciente: String = "",
+    var especialista: String = "",
+    var tipoCita: String = ""
 )

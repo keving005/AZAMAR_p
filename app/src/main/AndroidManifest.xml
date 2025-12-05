@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -37,6 +41,8 @@
             android:name=".MenuActivity"
             android:exported="false" />
 
+        <receiver android:name=".RecordatorioReceiver" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
@@ -44,6 +50,8 @@
         <activity
             android:name=".MapsActivity"
             android:exported="false"
-            android:label="Mapa de Ubicación" /> </application>
+            android:label="Mapa de Ubicación" />
+
+    </application>
 
 </manifest>

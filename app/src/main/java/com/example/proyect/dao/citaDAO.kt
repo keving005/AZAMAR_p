@@ -1,109 +1,75 @@
-package com.example.appproy.dao
+package com.example.proyect.dao
 
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
-import com.example.proyect.db.CitaDBHelper
-import com.example.appproy.model.Cita
+// CORRECCIÓN: Usamos TU paquete real 'proyect', no 'appproy'
 
-class citaDAO(private val dbHelper: CitaDBHelper) : Icrud<Cita, Int> {
-    companion object{
-        private const val TABLE_NAME = "cita"
-        private const val COLUMN_ID = "id"
-        private const val COLUMN_NOMBRE_PACIENTE = "nombrePaciente"
-        private const val COLUMN_ESPECIALISTA = "especialista"
-        private const val COLUMN_FECHA = "fecha"
-        private const val COLUMN_HORA = "hora"
-        private const val COLUMN_TIPO_CITA = "tipoCita"
-        private val ALL_COLUMNS = arrayOf(COLUMN_ID, COLUMN_NOMBRE_PACIENTE, COLUMN_ESPECIALISTA, COLUMN_FECHA, COLUMN_HORA, COLUMN_TIPO_CITA)
+import com.example.proyect.model.Cita
+import com.google.firebase.firestore.FirebaseFirestore
 
-    }
+class citaDAO {
 
-    override fun insertar(obj: Cita): Long {
-        val db: SQLiteDatabase = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_NOMBRE_PACIENTE, obj.nombrePaciente)
-            put(COLUMN_ESPECIALISTA, obj.especialista)
-            put(COLUMN_FECHA, obj.fecha)
-            put(COLUMN_HORA, obj.hora)
-            put(COLUMN_TIPO_CITA, obj.tipoCita)
-        }
-        return db.insert(TABLE_NAME, null, values)
+    private val db = FirebaseFirestore.getInstance()
+    private val collectionName = "citas"
+
+    // --- INSERTAR ---
+    fun insertar(cita: Cita, alTerminar: (Boolean) -> Unit) {
+        val citaMap = hashMapOf(
+            "nombrePaciente" to cita.nombrePaciente,
+            "especialista" to cita.especialista,
+            "fecha" to cita.fecha,
+            "hora" to cita.hora,
+            "tipoCita" to cita.tipoCita
+        )
+
+        db.collection(collectionName)
+            .add(citaMap)
+            .addOnSuccessListener { alTerminar(true) }
+            .addOnFailureListener { alTerminar(false) }
     }
 
     // --- ACTUALIZAR ---
-    override fun actualizar(obj: Cita): Int {
-        val db: SQLiteDatabase = dbHelper.writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_NOMBRE_PACIENTE, obj.nombrePaciente)
-            put(COLUMN_ESPECIALISTA, obj.especialista)
-            put(COLUMN_FECHA, obj.fecha)
-            put(COLUMN_HORA, obj.hora)
-            put(COLUMN_TIPO_CITA, obj.tipoCita)
+    fun actualizar(cita: Cita, alTerminar: (Boolean) -> Unit) {
+        if (cita.id.isEmpty()) {
+            alTerminar(false)
+            return
         }
 
-        val whereClause = "$COLUMN_ID = ?"
-        val whereArgs = arrayOf(obj.id.toString())
-
-        return db.update(TABLE_NAME, values, whereClause, whereArgs)
-    }
-
-    // --- ELIMINAR (Borrar) ---
-    override fun eliminar(id: Int): Int {
-        val db: SQLiteDatabase = dbHelper.writableDatabase
-        val whereClause = "$COLUMN_ID = ?"
-        val whereArgs = arrayOf(id.toString())
-
-        return db.delete(TABLE_NAME, whereClause, whereArgs)
-    }
-
-    // --- CONSULTAR (Leer un solo registro) ---
-    // NOTA: Se corrige el tipo de retorno a Cita?
-    override fun consultar(id: Int): Cita? {
-        val db: SQLiteDatabase = dbHelper.readableDatabase
-        val cursor = db.query(
-            TABLE_NAME,
-            ALL_COLUMNS,
-            "$COLUMN_ID = ?",
-            arrayOf(id.toString()),
-            null, null, null
+        val datosActualizados = hashMapOf<String, Any>(
+            "nombrePaciente" to cita.nombrePaciente,
+            "especialista" to cita.especialista,
+            "fecha" to cita.fecha,
+            "hora" to cita.hora,
+            "tipoCita" to cita.tipoCita
         )
 
-        val cita: Cita? = if (cursor.moveToFirst()) {
-            // Recuperamos la data siguiendo el orden de ALL_COLUMNS
-            val paciente = cursor.getString(1)
-            val especialista = cursor.getString(2)
-            val fecha = cursor.getString(3)
-            val hora = cursor.getString(4)
-            val tipo = cursor.getString(5)
-
-            Cita(id, paciente, especialista, fecha, hora, tipo)
-        } else {
-            null
-        }
-
-        cursor.close()
-        return cita
+        db.collection(collectionName).document(cita.id)
+            .update(datosActualizados)
+            .addOnSuccessListener { alTerminar(true) }
+            .addOnFailureListener { alTerminar(false) }
     }
 
-    // --- LISTAR (Leer todos los registros) ---
-    override fun listar(): List<Cita> {
-        val lista = mutableListOf<Cita>()
-        val db: SQLiteDatabase = dbHelper.readableDatabase
-        val sql = "SELECT ${ALL_COLUMNS.joinToString(", ")} FROM $TABLE_NAME"
-        val cursor = db.rawQuery(sql, null)
+    // --- ELIMINAR ---
+    fun eliminar(id: String, alTerminar: (Boolean) -> Unit) {
+        db.collection(collectionName).document(id)
+            .delete()
+            .addOnSuccessListener { alTerminar(true) }
+            .addOnFailureListener { alTerminar(false) }
+    }
 
-        while (cursor.moveToNext()) {
-            // Recuperamos la data siguiendo el orden de ALL_COLUMNS
-            val id = cursor.getInt(0)
-            val paciente = cursor.getString(1)
-            val especialista = cursor.getString(2)
-            val fecha = cursor.getString(3)
-            val hora = cursor.getString(4)
-            val tipo = cursor.getString(5)
-
-            lista.add(Cita(id, paciente, especialista, fecha, hora, tipo))
-        }
-        cursor.close()
-        return lista
+    // --- LISTAR ---
+    fun listar(alTerminar: (List<Cita>) -> Unit) {
+        db.collection(collectionName)
+            .get()
+            .addOnSuccessListener { result ->
+                val lista = mutableListOf<Cita>()
+                for (document in result) {
+                    val cita = document.toObject(Cita::class.java)
+                    cita.id = document.id
+                    lista.add(cita)
+                }
+                alTerminar(lista)
+            }
+            .addOnFailureListener {
+                alTerminar(emptyList())
+            }
     }
 }

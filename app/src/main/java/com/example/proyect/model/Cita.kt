@@ -1,10 +1,13 @@
-package com.example.appproy.model
+package com.example.proyect.model
 
-data class Cita (
-    val id : Int? = null,
-    val nombrePaciente : String,
-    val especialista : String,
-    val fecha : String,
-    val hora : String,
-    val tipoCita : String
+data class Cita(
+    // CAMBIO OBLIGATORIO:
+    // 1. 'var' para que se pueda modificar.
+    // 2. 'String' para aceptar el ID de Firebase.
+    var id: String = "",
+    var nombrePaciente: String = "",
+    var especialista: String = "",
+    var fecha: String = "",
+    var hora: String = "",
+    var tipoCita: String = ""
 )

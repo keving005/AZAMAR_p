@@ -1,8 +1,8 @@
-package com.example.appproy.model
+package com.example.proyect.model
 
-class Notificacion(
-    val id : Int? = null,
-    val mensaje: String,
-    val fecha: String,
-    val hora: String
+data class Notificacion(
+    var id: String = "",
+    var mensaje: String = "",
+    var fecha: String = "",
+    var hora: String = ""
 )
