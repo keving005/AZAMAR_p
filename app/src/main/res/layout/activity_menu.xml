@@ -32,105 +32,199 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center_horizontal"
+                android:orientation="vertical"
                 android:padding="12dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_marginBottom="20dp"
                     android:text="@string/cita_medica"
                     android:textColor="#6C3483"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-                <LinearLayout
-                    android:layout_width="115dp"
-                    android:layout_height="107dp"
-                    android:elevation="5dp"
-                    android:orientation="vertical"
-                    android:padding="24dp">
-
-                    <ImageView
-                        android:id="@+id/miImagen"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:src="@drawable/iniciouno"
-                        android:contentDescription="@string/foto_perfil" />
-                </LinearLayout>
-
+                <!-- Nombre -->
                 <EditText
                     android:id="@+id/etNombrePaciente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre del paciente"
-                    android:inputType="textPersonName" />
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
+                    android:layout_marginBottom="12dp"
+                    android:textColor="#000"
+                    android:textColorHint="#7D3C98" />
 
-                <Spinner
-                    android:id="@+id/spEspecialista"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
 
-                <EditText
-                    android:id="@+id/etFechaCita"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Seleccionar Fecha"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:drawableEnd="@android:drawable/ic_menu_today"
-                    android:layout_marginBottom="16dp"
-                    android:inputType="none" />
-
-                <EditText
-                    android:id="@+id/etHoraCita"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Seleccionar Hora"
-                    android:focusable="false"
-                    android:clickable="true"
-                    android:drawableEnd="@android:drawable/ic_lock_idle_alarm"
-                    android:layout_marginBottom="16dp"
-                    android:inputType="none" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="¿Quieres recibir notificaciones?"
-                    android:layout_marginTop="16dp"/>
-
-                <RadioGroup
-                    android:id="@+id/cbNotificaciones"
+                <!-- SEXO + TIPO DE SANGRE EN MISMA LÍNEA -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:weightSum="2"
+                    android:layout_marginBottom="12dp">
 
-                    <RadioButton
-                        android:id="@+id/rbNotiSi"
+                    <Spinner
+                        android:id="@+id/spSexo"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:background="@android:drawable/edit_text"
+                        android:layout_marginEnd="8dp" />
+
+                    <Spinner
+                        android:id="@+id/spTipoSangre"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:background="@android:drawable/edit_text" />
+                </LinearLayout>
+
+
+                <!-- Peso -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginBottom="12dp">
+
+                    <EditText
+                        android:id="@+id/etPeso"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Peso (kg)"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:background="@android:drawable/edit_text"
+                        android:textColorHint="#7D3C98"
+                        android:layout_marginEnd="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etAltura"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Altura (cm)"
+                        android:inputType="numberDecimal"
+                        android:padding="12dp"
+                        android:background="@android:drawable/edit_text"
+                        android:textColorHint="#7D3C98"/>
+                </LinearLayout>
+
+
+                <!-- Alergias -->
+                <EditText
+                    android:id="@+id/etAlergias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Alergias"
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
+                    android:layout_marginBottom="12dp"
+                    android:textColorHint="#7D3C98"/>
+
+                <!-- Especialista -->
+                <Spinner
+                    android:id="@+id/spEspecialista"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="@android:drawable/edit_text"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- FECHA + HORA EN MISMA LÍNEA -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginBottom="16dp">
+
+                    <EditText
+                        android:id="@+id/etFechaCita"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="12dp"
+                        android:background="@android:drawable/edit_text"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:drawableEnd="@android:drawable/ic_menu_today"
+                        android:hint="Fecha"
+                        android:textColorHint="#7D3C98"
+                        android:layout_marginEnd="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etHoraCita"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:padding="12dp"
+                        android:background="@android:drawable/edit_text"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:drawableEnd="@android:drawable/ic_lock_idle_alarm"
+                        android:hint="Hora"
+                        android:textColorHint="#7D3C98"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sí"/>
+                        android:text="Notificaciones:"
+                        android:textColor="#6C3483"
+                        android:layout_marginEnd="12dp"/>
 
-                    <RadioButton
-                        android:id="@+id/rbNotiNo"
+                    <RadioGroup
+                        android:id="@+id/cbNotificaciones"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="No"
-                        android:layout_marginStart="16dp"/>
-                </RadioGroup>
+                        android:orientation="horizontal">
 
+                        <RadioButton
+                            android:id="@+id/rbNotiSi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sí" />
+
+                        <RadioButton
+                            android:id="@+id/rbNotiNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No"
+                            android:layout_marginStart="12dp"/>
+                    </RadioGroup>
+
+                </LinearLayout>
+
+                <!-- Tipo de cita -->
                 <EditText
                     android:id="@+id/etTipoCita"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Tipo de cita"
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
                     android:layout_marginBottom="24dp"
-                    android:inputType="text" />
+                    android:textColorHint="#7D3C98"/>
 
+                <!-- Botones principales -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -140,48 +234,57 @@
                     <Button
                         android:id="@+id/btnGuardar"
                         android:layout_width="0dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Guardar"
                         android:backgroundTint="#6C3483"
-                        android:textColor="#FFFFFF" />
+                        android:text="Guardar"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginEnd="8dp"/>
 
                     <Button
                         android:id="@+id/btnHistorial"
                         android:layout_width="0dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="Historial"
                         android:backgroundTint="#3498DB"
-                        android:textColor="#FFFFFF" />
-
+                        android:text="Historial"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"/>
 
                     <Button
                         android:id="@+id/btnSalir"
                         android:layout_width="0dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="Salir"
                         android:backgroundTint="#E74C3C"
-                        android:textColor="#FFFFFF" />
-
+                        android:text="Salir"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"/>
                 </LinearLayout>
+
                 <Button
                     android:id="@+id/btnSegundaPantalla"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="#6C3483"
                     android:text="Ir a Segunda Pantalla"
-                    android:layout_marginTop="20dp" />
+                    android:textColor="#FFFFFF"/>
+
                 <TextView
                     android:id="@+id/tvHistorial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Historial de citas:"
-                    android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     android:layout_marginBottom="8dp"
+                    android:text="Historial de citas:"
+                    android:textStyle="bold"
                     android:visibility="gone" />
 
                 <TextView
@@ -190,29 +293,6 @@
                     android:layout_height="wrap_content"
                     android:text="(Sin registros aún)"
                     android:visibility="gone" />
-
-                <Button
-                    android:id="@+id/btnAbrirMapa"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Ver Ubicación de la Clínica"
-                    android:layout_marginTop="16dp"
-                    android:backgroundTint="#2E86C1"
-                    android:textColor="#FFFFFF"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calificación del sistema de citas"
-                    android:layout_marginTop="16dp"/>
-
-                <RatingBar
-                    android:id="@+id/ratingBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:numStars="5"
-                    android:stepSize="1.0"
-                    android:layout_marginTop="8dp"/>
 
             </LinearLayout>
         </ScrollView>
@@ -224,14 +304,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
-
         app:itemIconTint="#6C3483"
         app:itemTextColor="#4A235A"
         app:itemBackground="@drawable/estilo_boton_menu"
-
         app:itemHorizontalPadding="24dp"
         app:itemIconPadding="16dp"/>
 
