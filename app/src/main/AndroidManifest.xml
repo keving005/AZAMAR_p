@@ -3,12 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.proyect">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,10 +14,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PROYECT"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SegundaFor" />
+
         <activity
-            android:name=".AnimacionActivity"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.PROYECT">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,8 +26,10 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".AuthActivity"
             android:exported="false" />
+
+        <activity android:name=".SegundaFor" android:exported="false" />
 
         <activity
             android:name=".RegistroActivity"
@@ -41,16 +39,19 @@
             android:name=".MenuActivity"
             android:exported="false" />
 
-        <receiver android:name=".RecordatorioReceiver" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
-
         <activity
             android:name=".MapsActivity"
             android:exported="false"
             android:label="Mapa de Ubicación" />
+
+        <receiver
+            android:name=".RecordatorioReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
 
     </application>
 

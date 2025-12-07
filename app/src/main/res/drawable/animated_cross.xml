@@ -1,8 +1,0 @@
-<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_cross">
-
-    <target
-        android:name="horizontal_line"
-        android:animation="@animator/rotate_90_degrees" />
-
-</animated-vector>
