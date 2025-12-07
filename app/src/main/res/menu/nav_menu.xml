@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
     <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_carnet"
+            android:icon="@android:drawable/ic_menu_view"
+            android:title="Carnet Médico" />
+
         <item
             android:id="@+id/nav_tratamientos"
             android:icon="@android:drawable/ic_menu_agenda"
@@ -10,5 +19,16 @@
             android:id="@+id/nav_inicio"
             android:icon="@android:drawable/ic_menu_rotate"
             android:title="Volver al Inicio" />
+
+        <item android:title="Opciones">
+            <menu>
+                <item
+                    android:id="@+id/nav_salir"
+                    android:icon="@android:drawable/ic_lock_power_off"
+                    android:title="Cerrar Sesión" />
+            </menu>
+        </item>
+
     </group>
+
 </menu>

@@ -130,9 +130,13 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.nav_carnet -> { // 💡 NUEVA FUNCIÓN AÑADIDA
+                val intent = Intent(this, CarnetActivity::class.java)
+                startActivity(intent)
+            }
             R.id.nav_tratamientos -> {
-            Toast.makeText(this, "Sección en desarrollo", Toast.LENGTH_SHORT).show()
-        }
+                Toast.makeText(this, "Sección en desarrollo", Toast.LENGTH_SHORT).show()
+            }
             R.id.nav_inicio -> Toast.makeText(this, "Ya estás en Inicio", Toast.LENGTH_SHORT).show()
         }
         drawerLayout.closeDrawer(GravityCompat.START)
@@ -232,6 +236,4 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true
         ).show()
     }
-
-
 }

@@ -53,6 +53,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
 
+        <activity
+            android:name=".CarnetActivity"
+            android:exported="false"
+            android:label="Carnet Médico" />
+
     </application>
 
 </manifest>

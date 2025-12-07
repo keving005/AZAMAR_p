@@ -1,7 +1,5 @@
 package com.example.proyect.dao
 
-// CORRECCIÓN: Usamos TU paquete real 'proyect', no 'appproy'
-
 import com.example.proyect.model.Cita
 import com.google.firebase.firestore.FirebaseFirestore
 
