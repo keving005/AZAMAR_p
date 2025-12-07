@@ -23,7 +23,7 @@ import java.util.Calendar
 import java.util.HashMap
 import java.util.Locale
 
-class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class   MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     // Instancia de Firebase
     private val db = FirebaseFirestore.getInstance()
@@ -66,6 +66,15 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // --- 2. INICIALIZAR VISTAS PRINCIPALES ---
         inicializarVistasPrincipales()
+
+        val btnIrSegundaPantalla: Button = findViewById(R.id.btnSegundaPantalla)
+
+        btnIrSegundaPantalla.setOnClickListener {
+            // Crear el Intent para abrir la actividad SegundaFor
+            val intent = Intent(this, SegundaFor::class.java)
+            startActivity(intent)  // Iniciar la actividad
+        }
+
     }
 
     private fun inicializarVistasPrincipales() {
