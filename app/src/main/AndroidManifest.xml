@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PROYECT"
         android:usesCleartextTraffic="true">
-
+        <activity android:name=".SegundaFor" />
         <activity
             android:name=".AnimacionActivity"
             android:exported="true">
