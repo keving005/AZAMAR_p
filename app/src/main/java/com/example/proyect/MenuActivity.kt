@@ -1,5 +1,6 @@
 package com.example.proyect
 
+import DB.DBHelper
 import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.DatePickerDialog
@@ -31,6 +32,9 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var navigationView: NavigationView
     private lateinit var toolbar: Toolbar
 
+    private val REQUEST_HOSPITAL = 2001
+
+
     // CAMPOS NORMALES
     var etNombrePaciente: EditText? = null
     var etTipoCita: EditText? = null
@@ -49,8 +53,20 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var etAltura: EditText? = null
     var etAlergias: EditText? = null
 
+    // VARIABLES PARA GUARDAR LA UBICACIÓN SELECCIONADA
+    var hospitalNombre: String? = null
+    var hospitalLat: Double? = null
+    var hospitalLng: Double? = null
+    var hospitalDireccion: String? = null
+    var hospitalTelefono: String? = null
+    var hospitalHorario: String? = null
+
+    lateinit var dbHelper: DBHelper
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dbHelper = DBHelper(this)
         setContentView(R.layout.activity_menu)
 
         drawerLayout = findViewById(R.id.drawer_layout)
@@ -75,6 +91,40 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         btnIrSegundaPantalla.setOnClickListener {
             val intent = Intent(this, SegundaFor::class.java)
             startActivity(intent)
+        }
+        val btnUbicacion = findViewById<Button>(R.id.btnUbicacion)
+
+        btnUbicacion.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivityForResult(intent, REQUEST_HOSPITAL)
+        }
+
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_HOSPITAL && resultCode == RESULT_OK) {
+            val nombre = data?.getStringExtra("HOSPITAL_NOMBRE")
+            val lat = data?.getDoubleExtra("HOSPITAL_LAT", 0.0)
+            val lng = data?.getDoubleExtra("HOSPITAL_LNG", 0.0)
+            val direccion = data?.getStringExtra("HOSPITAL_DIRECCION")
+            val telefono = data?.getStringExtra("HOSPITAL_TELEFONO")
+            val horario = data?.getStringExtra("HOSPITAL_HORARIO")
+
+
+            // Guardamos en variables globales
+            hospitalNombre = nombre
+            hospitalLat = lat
+            hospitalLng = lng
+            hospitalDireccion = direccion
+            hospitalTelefono = telefono
+            hospitalHorario = horario
+
+            // Mostrar en EditText
+            etTipoCita?.setText("Hospital: $hospitalNombre")
+
+            // Mensaje de confirmación
+            Toast.makeText(this, "Elegiste: $hospitalNombre", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -172,20 +222,32 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             "tipoSangre" to sangre,
             "peso" to peso,
             "altura" to altura,
-            "alergias" to alergias
+            "alergias" to alergias,
+            "hospitalNombre" to hospitalNombre,
+            "hospitalDireccion" to hospitalDireccion,
+            "hospitalTelefono" to hospitalTelefono,
+            "hospitalHorario" to hospitalHorario
         )
 
         db.collection("citas").add(cita)
             .addOnSuccessListener {
                 Toast.makeText(this, "Cita Agendada", Toast.LENGTH_SHORT).show()
-
-                etTipoCita!!.setText("")
-                etFechaCita!!.setText("")
-                etHoraCita!!.setText("")
-                etPeso!!.setText("")
-                etAltura!!.setText("")
-                etAlergias!!.setText("")
             }
+        // 🔹 Guardar en SQLite
+            val exito = dbHelper.agregarCita(
+                nombre, esp, tipo, fecha, hora,
+                sexo, sangre, peso, altura, alergias,
+                hospitalNombre, hospitalDireccion, hospitalTelefono, hospitalHorario
+            )
+            if (exito) Toast.makeText(this, "Cita guardada en SQLite", Toast.LENGTH_SHORT).show()
+
+            // Limpiar campos
+            etTipoCita!!.setText("")
+            etFechaCita!!.setText("")
+            etHoraCita!!.setText("")
+            etPeso!!.setText("")
+            etAltura!!.setText("")
+            etAlergias!!.setText("")
     }
 
     private fun mostrarHistorialCitas() {

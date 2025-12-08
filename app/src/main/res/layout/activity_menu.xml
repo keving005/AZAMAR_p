@@ -223,6 +223,16 @@
                     android:background="@android:drawable/edit_text"
                     android:layout_marginBottom="24dp"
                     android:textColorHint="#7D3C98"/>
+                <Button
+                    android:id="@+id/btnUbicacion"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#8E44AD"
+                    android:text="Elegir Hospital en el Mapa"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="24dp"/>
 
                 <!-- Botones principales -->
                 <LinearLayout
