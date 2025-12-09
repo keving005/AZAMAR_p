@@ -1,0 +1,8 @@
+<resources>
+    <string name="foto_perfil">Foto de perfil</string>
+    <string name="app_name">PROYECT</string>
+    <string name="cita_medica">CITA MÉDICA</string>
+    <string name="title_activity_maps">Mapa de Ubicación</string>
+    <string name="navigation_drawer_open">Abrir menú</string>
+    <string name="navigation_drawer_close">Cerrar menú</string>
+</resources>

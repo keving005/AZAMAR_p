@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "591943028470",
+    "project_id": "citamedicafinal",
+    "storage_bucket": "citamedicafinal.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591943028470:android:ceb83fe27b37999982a6d7",
+        "android_client_info": {
+          "package_name": "com.example.proyect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN4oMij5T4JIkXM7pI7RKw3IfPpgPE5_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

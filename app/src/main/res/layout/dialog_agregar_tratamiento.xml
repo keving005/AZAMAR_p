@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nuevo Tratamiento"
+        android:textColor="#6C3483"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Configura tu recordatorio médico"
+        android:textColor="#757575"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Medicamento"
+        android:textStyle="bold"
+        android:textColor="#6C3483"
+        android:layout_marginBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etDialogMedicamento"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/fondo_input_moderno"
+        android:hint="Ej. Paracetamol"
+        android:inputType="textCapSentences"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dosis"
+        android:textStyle="bold"
+        android:textColor="#6C3483"
+        android:layout_marginBottom="6dp"/>
+
+    <EditText
+        android:id="@+id/etDialogDosis"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/fondo_input_moderno"
+        android:hint="Ej. 500 mg"
+        android:inputType="text"
+        android:layout_marginBottom="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frecuencia"
+                android:textStyle="bold"
+                android:textColor="#6C3483"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/etDialogFrecuencia"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/fondo_input_moderno"
+                android:hint="Horas"
+                android:inputType="number"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duración"
+                android:textStyle="bold"
+                android:textColor="#6C3483"
+                android:layout_marginBottom="6dp"/>
+
+            <EditText
+                android:id="@+id/etDialogDuracion"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/fondo_input_moderno"
+                android:hint="Días"
+                android:inputType="text"
+                android:gravity="center"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
