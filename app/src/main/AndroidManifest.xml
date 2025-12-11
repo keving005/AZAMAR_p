@@ -5,11 +5,10 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -66,8 +65,7 @@
             android:exported="false" />
         <activity
             android:name=".MenuActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".MapsActivity"
             android:exported="false" />
@@ -79,13 +77,12 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
+            android:value="AIzaSyDnXy-sp4qOEsmK2P4BSv3g6gkAfUhKGIg" />
 
         <activity
             android:name=".CarnetActivity"
             android:exported="false"
             android:label="Carnet Médico" />
-
     </application>
 
 </manifest>
