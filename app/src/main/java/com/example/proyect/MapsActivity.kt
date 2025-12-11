@@ -53,12 +53,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val telefono: String,
         val horario: String
     )
-
-    private val hospitales = listOf(
-        Hospital("Hospital Civil", 20.666, -103.333, "Av. Independencia #123", "33-1234-5678", "24 horas"),
-        Hospital("IMSS 45", 20.671, -103.345, "Av. Vallarta #2000", "33-9876-5432", "Lunes a viernes"),
-        Hospital("Hospital General de Chalco", 19.2644, -98.8978, "Av. Nacional S/N, Chalco, Edo. de México", "55-5972-5100", "Lunes a domingo")
+        private val hospitales = listOf(
+            // Hospitales privados en Chalco
+            Hospital("Hospital SAME Chalco", 19.2687548, -98.8941361, "Av. Cuauhtémoc No. 15, San Miguel Jacalones, Chalco de Díaz Covarrubias, Méx.", "55-1734-0930", "24 hrs"),
+    Hospital("Hospital de Maria", 19.2616433, -98.8903132, "Calle Centro, Chalco de Díaz Covarrubias, Méx.", "55-5975-5886", "Horario local"),
+    Hospital("Clínica Altius Chalco", 19.2600, -98.8890, "Privada Cerrada s/n, Agostadero, 56615 Valle de Chalco Solidaridad, Méx.", "55-3091-5133", "Horario local"),
+    Hospital("Clínica Santa Anita", 19.2500, -98.8660, "Avenida Alfredo del Mazo, Santa Cruz, 56617 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
+    Hospital("Central Médica Santa Cruz", 19.2510, -98.8665, "Calle Norte 9, Santa Cruz, 56617 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
+    Hospital("Sanatorio Providencia", 19.2520, -98.8670, "Calle Norte 1, Providencia, 56616 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
+    Hospital("Clínica Santa Ana Yareni", 19.2490, -98.8680, "Avenida Solidaridad (Tejones), El Triunfo, 56600 Chalco, Méx.", "N/A", "Horario local"),
+    Hospital("Clínica Del Valle", 19.2550, -98.8655, "Avenida Emiliano Zapata, San Isidro, 56608 Chalco, Méx.", "N/A", "Horario local"),
+    Hospital("Clínica Cambios Salud Integral", 19.2560, -98.8640, "Av. Moctezuma, San Miguel Xico II Sección, 56600 Chalco, Méx.", "N/A", "Horario local")
     )
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
