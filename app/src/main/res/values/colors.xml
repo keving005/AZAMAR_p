@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="hospital_primary">#1A237E</color> <color name="hospital_primary_dark">#000051</color>
+    <color name="hospital_accent">#00BFA5</color> <color name="background_light">#F5F7FA</color> <color name="text_dark">#263238</color> <color name="text_secondary">#78909C</color> <color name="white">#FFFFFF</color>
+    <color name="logout_red">#D32F2F</color>
 </resources>

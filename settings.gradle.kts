@@ -10,11 +10,6 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-
-    plugins {
-        id("org.jetbrains.kotlin.android") version "2.0.0"
-        id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"  // 👈 NECESARIO
-    }
 }
 
 dependencyResolutionManagement {
@@ -25,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PROYECT"
+rootProject.name = "PROYECT" // Asegúrate de que este sea el nombre correcto de tu proyecto
 include(":app")

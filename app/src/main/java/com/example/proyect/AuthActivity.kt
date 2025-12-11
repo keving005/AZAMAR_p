@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.FirebaseApp
 
-// Esta clase contiene tu lógica de login de Vistas (XML) y Firebase
 class AuthActivity : AppCompatActivity() {
 
     private lateinit var etEmail: EditText
@@ -23,14 +22,15 @@ class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main) // Asegúrate que tu XML se llama activity_auth o activity_main según corresponda
 
-        // Verificación de conexión a Firebase
+        // Verificación de conexión a Firebase (Lo que ya tenías)
         try {
             val idProyecto = FirebaseApp.getInstance().options.projectId
-            Toast.makeText(this, "CONECTADO A PROYECTO: $idProyecto", Toast.LENGTH_LONG).show()
+            // Comenté el Toast para que no moleste cada vez, pero funciona igual
+            // Toast.makeText(this, "Conectado a: $idProyecto", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Toast.makeText(this, "Error leyendo configuración: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error config: ${e.message}", Toast.LENGTH_LONG).show()
         }
 
         // Vinculación de Vistas
@@ -48,25 +48,12 @@ class AuthActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // LÓGICA DE LOGIN CON FIREBASE
+            // --- LÓGICA DE LOGIN ---
             auth.signInWithEmailAndPassword(email, pass)
                 .addOnSuccessListener { result ->
                     val uid = result.user?.uid
                     if (uid != null) {
-                        db.collection("usuarios").document(uid).get()
-                            .addOnSuccessListener { document ->
-                                val nombre = document.getString("nombre") ?: "Usuario"
-                                Toast.makeText(this, "Bienvenido $nombre", Toast.LENGTH_SHORT).show()
-
-                                val intent = Intent(this, MenuActivity::class.java)
-                                intent.putExtra("NOMBRE_USUARIO", nombre)
-                                startActivity(intent)
-                                finish()
-                            }
-                            .addOnFailureListener {
-                                val intent = Intent(this, MenuActivity::class.java)
-                                startActivity(intent)
-                            }
+                        verificarRolYRedirigir(uid)
                     }
                 }
                 .addOnFailureListener {
@@ -77,5 +64,50 @@ class AuthActivity : AppCompatActivity() {
         tvIrARegistro.setOnClickListener {
             startActivity(Intent(this, RegistroActivity::class.java))
         }
+    }
+
+    private fun verificarRolYRedirigir(uid: String) {
+        val userRef = db.collection("usuarios").document(uid)
+
+        userRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val nombre = document.getString("nombre") ?: "Usuario"
+
+                    // Verificamos si existe el campo "rol"
+                    val rolExistente = document.getLong("rol")?.toInt()
+
+                    if (rolExistente == null) {
+                        // --- AUTOMATIZACIÓN PARA USUARIOS VIEJOS ---
+                        // Si no tiene rol, le ponemos 1 (Paciente) y actualizamos la BD
+                        userRef.update("rol", 1)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Perfil actualizado. Bienvenido $nombre", Toast.LENGTH_SHORT).show()
+                                irAPantalla(1, nombre) // Lo mandamos como paciente
+                            }
+                    } else {
+                        // Si ya tiene rol, respetamos el que tenga
+                        Toast.makeText(this, "Bienvenido $nombre", Toast.LENGTH_SHORT).show()
+                        irAPantalla(rolExistente, nombre)
+                    }
+                } else {
+                    Toast.makeText(this, "Usuario sin datos en base de datos", Toast.LENGTH_LONG).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al obtener datos del usuario", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun irAPantalla(rol: Int, nombre: String) {
+        val intent = when (rol) {
+            1 -> Intent(this, MenuActivity::class.java)       // Paciente
+            2 -> Intent(this, DoctorActivity::class.java)     // Doctor
+            3 -> Intent(this, HospitalActivity::class.java)   // Hospital
+            else -> Intent(this, MenuActivity::class.java)    // Por defecto Paciente
+        }
+        intent.putExtra("NOMBRE_USUARIO", nombre)
+        startActivity(intent)
+        finish()
     }
 }

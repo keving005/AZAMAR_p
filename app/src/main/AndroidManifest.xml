@@ -4,7 +4,7 @@
     package="com.example.proyect">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +15,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PROYECT"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:replace="android:allowBackup">
+
+        <activity
+            android:name=".DoctoresActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".PacientesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetalleCitaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".DoctorCitasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DoctorAgendaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HospitalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DoctorActivity"
+            android:exported="false" />
 
         <activity
             android:name=".MainActivity"
@@ -30,21 +55,18 @@
         <activity
             android:name=".AuthActivity"
             android:exported="false" />
-
-        <activity android:name=".SegundaFor" android:exported="false" />
-
+        <activity
+            android:name=".SegundaFor"
+            android:exported="false" />
         <activity
             android:name=".RegistroActivity"
             android:exported="false" />
-
         <activity
             android:name=".MenuActivity"
             android:exported="false" />
-
         <activity
             android:name=".MapsActivity"
-            android:exported="false"
-            android:label="Mapa de Ubicación" />
+            android:exported="false" />
 
         <receiver
             android:name=".RecordatorioReceiver"
@@ -53,13 +75,12 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="AIzaSyCL1UsD2WO1IrgIBykfGCrrEMTJ3I192jg" />
 
         <activity
             android:name=".CarnetActivity"
             android:exported="false"
             android:label="Carnet Médico" />
-
     </application>
 
 </manifest>
