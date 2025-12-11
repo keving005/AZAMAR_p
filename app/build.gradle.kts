@@ -48,7 +48,14 @@ android {
 }
 
 dependencies {
-    // --- BOMs (Manejo automático de versiones) ---
+
+    // --- PDF & QR ---
+    implementation("com.itextpdf:itext7-core:8.0.3")
+    implementation("com.google.zxing:core:3.5.1")
+    implementation("com.google.zxing:android-core:3.3.0")
+    implementation("com.google.zxing:javase:3.5.1")
+
+    // --- BOMs ---
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
 
@@ -67,17 +74,15 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.runtime:runtime-livedata")
 
-    // --- Firebase ---
+    // --- Firebase (sin versión individual) ---
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-database-ktx")
 
     // --- Google Maps & Redes ---
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.android.volley:volley:1.2.1")
 
-    // --- OTROS ---
+    // --- Otros ---
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-
-    // --- LIBRERÍA DEL CALENDARIO (WEEK VIEW) ---
-
 }

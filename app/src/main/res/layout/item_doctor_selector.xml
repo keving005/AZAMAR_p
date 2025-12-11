@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDocNombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dr. Nombre"
+            android:textStyle="bold"
+            android:textColor="#00695C"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tvDocEspecialidad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Especialidad"
+            android:textSize="14sp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
