@@ -8,91 +8,224 @@
     android:layout_height="match_parent"
     tools:context=".MenuActivity">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:fitsSystemWindows="true">
+        android:background="#F5F5F5">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#6C3483"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:title="Cita Médica"
-            app:titleTextColor="#FFFFFF"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <ScrollView
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="#0097A7"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:title="Agendar Cita Médica" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp">
+            android:padding="16dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:text="@string/cita_medica"
-                    android:textColor="#6C3483"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:text="Datos del Paciente"
+                    android:textStyle="bold"
+                    android:textColor="#006064"
+                    android:layout_marginBottom="8dp"/>
 
-                <!-- Nombre -->
                 <EditText
                     android:id="@+id/etNombrePaciente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre del paciente"
-                    android:padding="12dp"
+                    android:hint="Nombre Completo"
+                    android:inputType="textPersonName"
                     android:background="@android:drawable/edit_text"
-                    android:layout_marginBottom="12dp"
-                    android:textColor="#000"
-                    android:textColorHint="#7D3C98" />
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"/>
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="4dp"
+                    app:cardBackgroundColor="#E0F7FA"
+                    android:layout_marginBottom="20dp">
 
-                <!-- SEXO + TIPO DE SANGRE EN MISMA LÍNEA -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Selección de Especialista"
+                            android:textStyle="bold"
+                            android:textColor="#006064"/>
+
+                        <Button
+                            android:id="@+id/btnBuscarEspecialista"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="🔍  Buscar Hospital y Doctor"
+                            android:backgroundTint="#0097A7"
+                            android:textColor="#FFFFFF"
+                            android:layout_marginTop="8dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Doctor y Unidad Médica Asignados:"
+                            android:textSize="12sp"
+                            android:layout_marginTop="8dp"/>
+
+                        <EditText
+                            android:id="@+id/etDoctorSeleccionado"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="--- Selecciona arriba ---"
+                            android:focusable="false"
+                            android:clickable="false"
+                            android:textStyle="bold"
+                            android:textColor="#004D40"
+                            android:background="@null"
+                            android:paddingVertical="8dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Detalles de la Cita"
+                    android:textStyle="bold"
+                    android:textColor="#006064"
+                    android:layout_marginBottom="8dp"/>
+
+                <EditText
+                    android:id="@+id/etTipoCita"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Motivo de la cita (Ej. Dolor de cabeza)"
+                    android:background="@android:drawable/edit_text"
+                    android:padding="12dp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Especialidad (Opcional si usaste búsqueda)"
+                    android:textSize="12sp"/>
+                <Spinner
+                    android:id="@+id/spEspecialista"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@android:drawable/btn_dropdown"
+                    android:layout_marginBottom="12dp"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="2"
+                    android:layout_marginBottom="12dp">
+
+                    <EditText
+                        android:id="@+id/etFechaCita"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Fecha"
+                        android:focusable="false"
+                        android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                        android:layout_marginEnd="8dp"/>
+
+                    <EditText
+                        android:id="@+id/etHoraCita"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="Hora"
+                        android:focusable="false"
+                        android:drawableEnd="@android:drawable/ic_menu_recent_history"
+                        android:layout_marginStart="8dp"/>
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Datos Médicos"
+                    android:textStyle="bold"
+                    android:textColor="#006064"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- FECHA DE NACIMIENTO -->
+                <EditText
+                    android:id="@+id/etFechaNacimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fecha de nacimiento"
+                    android:focusable="false"
+                    android:drawableEnd="@android:drawable/ic_menu_my_calendar"
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- TELÉFONO -->
+                <EditText
+                    android:id="@+id/etTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Número Telefónico"
+                    android:inputType="phone"
+                    android:padding="12dp"
+                    android:background="@android:drawable/edit_text"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- SPINNERS SEXO Y TIPO DE SANGRE -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_marginBottom="12dp">
 
                     <Spinner
                         android:id="@+id/spSexo"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:background="@android:drawable/edit_text"
-                        android:layout_marginEnd="8dp" />
+                        android:background="@android:drawable/btn_dropdown"
+                        android:layout_marginEnd="4dp"/>
 
                     <Spinner
                         android:id="@+id/spTipoSangre"
                         android:layout_width="0dp"
-                        android:layout_height="40dp"
+                        android:layout_height="50dp"
                         android:layout_weight="1"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp"
-                        android:background="@android:drawable/edit_text" />
+                        android:background="@android:drawable/btn_dropdown"
+                        android:layout_marginStart="4dp"/>
                 </LinearLayout>
 
 
-                <!-- Peso -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:weightSum="2"
                     android:layout_marginBottom="12dp">
 
                     <EditText
@@ -101,10 +234,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Peso (kg)"
-                        android:inputType="numberDecimal"
-                        android:padding="12dp"
-                        android:background="@android:drawable/edit_text"
-                        android:textColorHint="#7D3C98"
+                        android:inputType="text|number"
                         android:layout_marginEnd="8dp"/>
 
                     <EditText
@@ -113,200 +243,72 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:hint="Altura (cm)"
-                        android:inputType="numberDecimal"
-                        android:padding="12dp"
-                        android:background="@android:drawable/edit_text"
-                        android:textColorHint="#7D3C98"/>
+                        android:inputType="text|number"
+                        android:layout_marginStart="8dp"/>
                 </LinearLayout>
 
-
-                <!-- Alergias -->
                 <EditText
                     android:id="@+id/etAlergias"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Alergias"
-                    android:padding="12dp"
-                    android:background="@android:drawable/edit_text"
-                    android:layout_marginBottom="12dp"
-                    android:textColorHint="#7D3C98"/>
-
-                <!-- Especialista -->
-                <Spinner
-                    android:id="@+id/spEspecialista"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:paddingStart="8dp"
-                    android:paddingEnd="8dp"
-                    android:background="@android:drawable/edit_text"
-                    android:layout_marginBottom="10dp" />
-
-                <!-- FECHA + HORA EN MISMA LÍNEA -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2"
-                    android:layout_marginBottom="16dp">
-
-                    <EditText
-                        android:id="@+id/etFechaCita"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="12dp"
-                        android:background="@android:drawable/edit_text"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:drawableEnd="@android:drawable/ic_menu_today"
-                        android:hint="Fecha"
-                        android:textColorHint="#7D3C98"
-                        android:layout_marginEnd="8dp"/>
-
-                    <EditText
-                        android:id="@+id/etHoraCita"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:padding="12dp"
-                        android:background="@android:drawable/edit_text"
-                        android:clickable="true"
-                        android:focusable="false"
-                        android:drawableEnd="@android:drawable/ic_lock_idle_alarm"
-                        android:hint="Hora"
-                        android:textColorHint="#7D3C98"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Notificaciones:"
-                        android:textColor="#6C3483"
-                        android:layout_marginEnd="12dp"/>
-
-                    <RadioGroup
-                        android:id="@+id/cbNotificaciones"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <RadioButton
-                            android:id="@+id/rbNotiSi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Sí" />
-
-                        <RadioButton
-                            android:id="@+id/rbNotiNo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="No"
-                            android:layout_marginStart="12dp"/>
-                    </RadioGroup>
-
-                </LinearLayout>
-
-                <!-- Tipo de cita -->
-                <EditText
-                    android:id="@+id/etTipoCita"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Tipo de cita"
-                    android:padding="12dp"
-                    android:background="@android:drawable/edit_text"
-                    android:layout_marginBottom="24dp"
-                    android:textColorHint="#7D3C98"/>
-                <Button
-                    android:id="@+id/btnUbicacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:backgroundTint="#8E44AD"
-                    android:text="Elegir Hospital en el Mapa"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    android:textColor="#FFFFFF"
+                    android:hint="Alergias (Opcional)"
                     android:layout_marginBottom="24dp"/>
 
-                <!-- Botones principales -->
+                <Button
+                    android:id="@+id/btnGuardar"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="Confirmar Cita"
+                    android:backgroundTint="#0097A7"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-
-                    <Button
-                        android:id="@+id/btnGuardar"
-                        android:layout_width="0dp"
-                        android:layout_height="50dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#6C3483"
-                        android:text="Guardar"
-                        android:textAllCaps="false"
-                        android:textSize="16sp"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginEnd="8dp"/>
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/btnHistorial"
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:backgroundTint="#3498DB"
                         android:text="Historial"
-                        android:textAllCaps="false"
-                        android:textSize="16sp"
-                        android:textColor="#FFFFFF"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginStart="8dp"/>
+                        android:backgroundTint="#455A64"
+                        android:layout_marginEnd="4dp"/>
 
                     <Button
-                        android:id="@+id/btnSalir"
+                        android:id="@+id/btnUbicacion"
                         android:layout_width="0dp"
-                        android:layout_height="50dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:backgroundTint="#E74C3C"
-                        android:text="Salir"
-                        android:textAllCaps="false"
-                        android:textSize="16sp"
-                        android:textColor="#FFFFFF"/>
+                        android:text="Ubicación"
+                        android:backgroundTint="#455A64"
+                        android:layout_marginStart="4dp"/>
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/btnSegundaPantalla"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="#6C3483"
                     android:text="Ir a Segunda Pantalla"
-                    android:textColor="#FFFFFF"/>
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp"/>
 
-                <TextView
-                    android:id="@+id/tvHistorial"
+                <Button
+                    android:id="@+id/btnSalir"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Historial de citas:"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:id="@+id/tvCitas"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="(Sin registros aún)"
-                    android:visibility="gone" />
+                    android:text="Salir"
+                    android:textColor="#D32F2F"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_marginTop="8dp"/>
 
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
@@ -315,11 +317,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu"
-        app:itemIconTint="#6C3483"
-        app:itemTextColor="#4A235A"
-        app:itemBackground="@drawable/estilo_boton_menu"
-        app:itemHorizontalPadding="24dp"
-        app:itemIconPadding="16dp"/>
+        app:menu="@menu/nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>
