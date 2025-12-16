@@ -86,6 +86,7 @@
             android:id="@+id/btnIrHospital"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#0097A7"
             android:text="Ir al hospital" />
 
     </LinearLayout>
