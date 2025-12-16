@@ -3,23 +3,25 @@ package com.example.proyect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton // Importante
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.switchmaterial.SwitchMaterial // Importante
+import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlin.random.Random
 
 class PacientesAdapter(
     private val listaUsuarios: List<Usuario>,
-    private val onAfiliadoChanged: (Usuario, Boolean) -> Unit
+    private val onAfiliadoChanged: (Usuario, Boolean) -> Unit,
+    private val onExpedienteClick: (Usuario) -> Unit // NUEVO: Callback para el botón expediente
 ) : RecyclerView.Adapter<PacientesAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tvNombre: TextView = view.findViewById(R.id.tvNombrePac)
         val tvCorreo: TextView = view.findViewById(R.id.tvCorreoPac)
-        // CAMBIO: Ahora es SwitchMaterial, no CheckBox
         val switchAfiliado: SwitchMaterial = view.findViewById(R.id.cbAfiliado)
         val tvNumAfiliacion: TextView = view.findViewById(R.id.tvNumAfiliacion)
+        // NUEVO: El botón de expediente
+        val btnExpediente: LinearLayout = view.findViewById(R.id.btnExpediente)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,13 +35,10 @@ class PacientesAdapter(
         holder.tvNombre.text = usuario.nombre
         holder.tvCorreo.text = usuario.correo
 
-        // Quitamos el listener temporalmente
+        // Lógica Afiliado (Igual que antes)
         holder.switchAfiliado.setOnCheckedChangeListener(null)
-
-        // Asignamos estado
         holder.switchAfiliado.isChecked = usuario.esAfiliado
 
-        // Logica visual del ID
         if (usuario.esAfiliado) {
             holder.tvNumAfiliacion.visibility = View.VISIBLE
             holder.tvNumAfiliacion.text = usuario.numeroAfiliacion
@@ -47,11 +46,9 @@ class PacientesAdapter(
             holder.tvNumAfiliacion.visibility = View.GONE
         }
 
-        // Listener del Switch
         holder.switchAfiliado.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (buttonView.isPressed) { // Solo si el usuario lo tocó físicamente
+            if (buttonView.isPressed) {
                 usuario.esAfiliado = isChecked
-
                 if (isChecked) {
                     if (usuario.numeroAfiliacion.isEmpty()) {
                         val randomId = Random.nextInt(10000, 99999)
@@ -62,9 +59,13 @@ class PacientesAdapter(
                 } else {
                     holder.tvNumAfiliacion.visibility = View.GONE
                 }
-
                 onAfiliadoChanged(usuario, isChecked)
             }
+        }
+
+        // NUEVO: Listener para el botón de Expediente
+        holder.btnExpediente.setOnClickListener {
+            onExpedienteClick(usuario)
         }
     }
 

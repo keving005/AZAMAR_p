@@ -1,187 +1,528 @@
 package com.example.proyect
-import android.app.AlarmManager
+
 import android.app.AlertDialog
-import android.app.DatePickerDialog
-import android.app.PendingIntent
-import android.app.TimePickerDialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.core.view.GravityCompat
+import androidx.core.widget.NestedScrollView // IMPORTANTE: Agregado para arreglar el error
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.proyect.DB.DBHelper
-import com.example.proyect.model.Cita
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
-import java.util.HashMap
 import java.util.Locale
 
 class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
+    private lateinit var dbHelper: DBHelper
 
+    // --- CORRECCIÓN AQUÍ: Ahora es NestedScrollView ---
+    private lateinit var layoutDashboard: NestedScrollView
+    private lateinit var layoutFormulario: View // Este también es un NestedScrollView en el XML, pero como View funciona bien
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var navigationView: NavigationView
-    private lateinit var toolbar: Toolbar
+
+    // Dashboard UI
+    private lateinit var tvUserNameDashboard: TextView
+    private lateinit var tvDashEspecialista: TextView
+    private lateinit var tvDashFecha: TextView
+
+    // Formulario UI
+    private lateinit var etNombrePaciente: EditText
+    private lateinit var etTelefono: EditText
+    private lateinit var etCorreo: EditText
+    private lateinit var etFechaNacimiento: EditText
+    private lateinit var spGenero: Spinner
+    private lateinit var cbAfiliado: CheckBox
+    private lateinit var etNumeroAfiliado: EditText
+
+    private lateinit var spHospital: Spinner
+    private lateinit var spDoctor: Spinner
+    private lateinit var spTipoCita: Spinner
+    private lateinit var etMotivo: EditText
+
+    private lateinit var etFechaCita: EditText
+    private lateinit var spHorarios: Spinner
+    private lateinit var btnGuardar: Button
+
+    // Variables de Lógica
+    private val listaHospitalesNombres = mutableListOf<String>()
+    private val listaHospitalesIds = mutableListOf<String>()
+
+    private val listaDoctoresNombres = mutableListOf<String>()
+    private val listaDoctoresIds = mutableListOf<String>()
+
+    private var selectedHospitalId: String = ""
+    private var selectedDoctorId: String = ""
+    private var fechaSeleccionadaFormato: String = "" // YYYY-MM-DD para la BD
 
     private val REQUEST_HOSPITAL = 2001
 
-    // CAMPOS DE CITA
-    var etNombrePaciente: EditText? = null
-    var etTipoCita: EditText? = null
-    var spEspecialista: Spinner? = null
-    var etFechaCita: EditText? = null
-    var etHoraCita: EditText? = null
-    var btnGuardar: Button? = null
-    var btnHistorial: Button? = null
-    var btnSalir: Button? = null
-
-    // NUEVOS CAMPOS (Que agregaron tus amigos)
-    var spSexo: Spinner? = null
-    var spTipoSangre: Spinner? = null
-    var etPeso: EditText? = null
-    var etAltura: EditText? = null
-    var etAlergias: EditText? = null
-
-    // VARIABLES PARA GUARDAR LA UBICACIÓN SELECCIONADA
-    var hospitalNombre: String? = null
-    var hospitalLat: Double? = null
-    var hospitalLng: Double? = null
-    var hospitalDireccion: String? = null
-    var hospitalTelefono: String? = null
-    var hospitalHorario: String? = null
-
-    lateinit var dbHelper: DBHelper
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dbHelper = DBHelper(this)
         setContentView(R.layout.activity_menu)
+        dbHelper = DBHelper(this)
 
-        // Configuración del Menú Lateral
+        // 1. Inicializar Vistas Estructurales
+        // Al hacer findViewById, ahora lo encontrará correctamente como NestedScrollView
+        layoutDashboard = findViewById(R.id.layoutDashboard)
+        layoutFormulario = findViewById(R.id.layoutFormulario)
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.nav_view)
-        toolbar = findViewById(R.id.toolbar)
 
-        setSupportActionBar(toolbar)
+        tvUserNameDashboard = findViewById(R.id.tvUserNameDashboard)
+        tvDashEspecialista = findViewById(R.id.tvDashEspecialista)
+        tvDashFecha = findViewById(R.id.tvDashFecha)
+
+        // 2. Configurar Menú Lateral
         navigationView.setNavigationItemSelectedListener(this)
-
-        val toggle = ActionBarDrawerToggle(
-            this, drawerLayout, toolbar,
-            R.string.navigation_drawer_open,
-            R.string.navigation_drawer_close
-        )
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        inicializarVistasPrincipales()
-
-        // Botones extra de navegación
-        val btnIrSegundaPantalla: Button = findViewById(R.id.btnSegundaPantalla)
-        btnIrSegundaPantalla.setOnClickListener {
-            val intent = Intent(this, SegundaFor::class.java)
-            startActivity(intent)
+        findViewById<ImageView>(R.id.btnMenuHamburguesa).setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
         }
 
-        val btnUbicacion = findViewById<Button>(R.id.btnUbicacion)
-        btnUbicacion.setOnClickListener {
-            val intent = Intent(this, MapsActivity::class.java)
-            startActivityForResult(intent, REQUEST_HOSPITAL)
+        // 3. Inicializar Formulario y Cargar Datos
+        inicializarVistasFormulario()
+        cargarDatosUsuario()
+        cargarHospitales()
+
+        // 4. Botones del Dashboard
+
+        // Botón Cita (Grande)
+        findViewById<CardView>(R.id.btnAgendarCitaMain).setOnClickListener {
+            mostrarFormulario(true)
         }
+
+        // Botón Farmacia
+        findViewById<CardView>(R.id.btnFarmaciaMain).setOnClickListener {
+            startActivity(Intent(this, FarmaciaPacienteActivity::class.java))
+        }
+
+        // --- BOTÓN RECETAS (ACTUALIZADO) ---
+        findViewById<CardView>(R.id.btnRecetasMain).setOnClickListener {
+            startActivity(Intent(this, MisRecetasActivity::class.java))
+        }
+
+        // Botón Mapa
+        findViewById<CardView>(R.id.btnBuscarEspecialista).setOnClickListener {
+            abrirMapa()
+        }
+
+        // Botón Regresar (Flecha dentro del formulario)
+        findViewById<ImageView>(R.id.btnRegresarDashboard).setOnClickListener {
+            mostrarFormulario(false)
+        }
+
+        // Cargar datos del dashboard al iniciar
+        actualizarDashboard()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == REQUEST_HOSPITAL && resultCode == RESULT_OK) {
-            val nombre = data?.getStringExtra("HOSPITAL_NOMBRE")
-            val lat = data?.getDoubleExtra("HOSPITAL_LAT", 0.0)
-            val lng = data?.getDoubleExtra("HOSPITAL_LNG", 0.0)
-            val direccion = data?.getStringExtra("HOSPITAL_DIRECCION")
-            val telefono = data?.getStringExtra("HOSPITAL_TELEFONO")
-            val horario = data?.getStringExtra("HOSPITAL_HORARIO")
-
-            // Guardamos en variables globales
-            hospitalNombre = nombre
-            hospitalLat = lat
-            hospitalLng = lng
-            hospitalDireccion = direccion
-            hospitalTelefono = telefono
-            hospitalHorario = horario
-
-            // Mostrar en EditText
-            etTipoCita?.setText("Hospital: $hospitalNombre")
-
-            Toast.makeText(this, "Elegiste: $hospitalNombre", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun inicializarVistasPrincipales() {
-        // Inicializar Vistas
+    private fun inicializarVistasFormulario() {
         etNombrePaciente = findViewById(R.id.etNombrePaciente)
-        etTipoCita = findViewById(R.id.etTipoCita)
-        spEspecialista = findViewById(R.id.spEspecialista)
+        etTelefono = findViewById(R.id.etTelefono)
+        etCorreo = findViewById(R.id.etCorreo)
+        etFechaNacimiento = findViewById(R.id.etFechaNacimiento)
+        spGenero = findViewById(R.id.spGenero)
+        cbAfiliado = findViewById(R.id.cbAfiliado)
+        etNumeroAfiliado = findViewById(R.id.etNumeroAfiliado)
+
+        spHospital = findViewById(R.id.spHospital)
+        spDoctor = findViewById(R.id.spDoctor)
+        spTipoCita = findViewById(R.id.spTipoCita)
+        etMotivo = findViewById(R.id.etMotivo)
+
         etFechaCita = findViewById(R.id.etFechaCita)
-        etHoraCita = findViewById(R.id.etHoraCita)
+        spHorarios = findViewById(R.id.spHorarios)
         btnGuardar = findViewById(R.id.btnGuardar)
-        btnHistorial = findViewById(R.id.btnHistorial)
-        btnSalir = findViewById(R.id.btnSalir)
 
-        // Inicializar Campos Nuevos
-        spSexo = findViewById(R.id.spSexo)
-        spTipoSangre = findViewById(R.id.spTipoSangre)
-        etPeso = findViewById(R.id.etPeso)
-        etAltura = findViewById(R.id.etAltura)
-        etAlergias = findViewById(R.id.etAlergias)
+        val generos = arrayOf("Masculino", "Femenino", "Otro")
+        spGenero.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, generos)
 
-        // Recuperar usuario
-        val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
-        etNombrePaciente?.setText(nombreUsuario)
+        val tiposCita = arrayOf("Primera Vez", "Seguimiento", "Consulta General", "Urgencia Menor")
+        spTipoCita.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, tiposCita)
 
-        // Configurar Spinners
-        val especialistas = arrayOf("Médico General", "Pediatra", "Cardiólogo", "Dentista", "Ginecólogo")
-        spEspecialista!!.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, especialistas)
+        cbAfiliado.setOnCheckedChangeListener { _, isChecked ->
+            etNumeroAfiliado.visibility = if (isChecked) View.VISIBLE else View.GONE
+        }
 
-        val sexos = arrayOf("Femenino", "Masculino", "Otro")
-        spSexo!!.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sexos)
+        etFechaNacimiento.setOnClickListener { mostrarSelectorNacimientoPremium() }
+        etFechaCita.setOnClickListener { mostrarCalendarioCitaPremium() }
 
-        val sangre = arrayOf("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-")
-        spTipoSangre!!.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sangre)
+        btnGuardar.setOnClickListener { validarYGuardarCita() }
+    }
 
-        // Listeners
-        etFechaCita!!.setOnClickListener { mostrarDatePicker() }
-        etHoraCita!!.setOnClickListener { mostrarTimePicker() }
-        btnGuardar!!.setOnClickListener { guardarCitaEnFirebase() }
-        btnHistorial!!.setOnClickListener { mostrarHistorialCitas() }
+    // --- CARGA DE DATOS ---
 
-        btnSalir!!.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+    private fun cargarDatosUsuario() {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("usuarios").document(uid).get().addOnSuccessListener { doc ->
+            if (doc.exists()) {
+                val nombre = doc.getString("nombre") ?: ""
+                val apellidos = doc.getString("apellidos") ?: ""
+                val nombreCompleto = "$nombre $apellidos".trim()
+
+                etNombrePaciente.setText(nombreCompleto)
+                tvUserNameDashboard.text = nombreCompleto
+
+                if (doc.getBoolean("esAfiliado") == true) {
+                    cbAfiliado.isChecked = true
+                    etNumeroAfiliado.setText(doc.getString("numeroAfiliacion") ?: "")
+                }
+            }
         }
     }
 
-    // --- AQUÍ ESTABA EL CAMBIO QUE HICIERON TUS AMIGOS ---
+    private fun cargarHospitales() {
+        db.collection("usuarios").whereEqualTo("rol", 3).get()
+            .addOnSuccessListener { result ->
+                listaHospitalesNombres.clear()
+                listaHospitalesIds.clear()
+
+                listaHospitalesNombres.add("Seleccione Hospital")
+                listaHospitalesIds.add("")
+
+                for (doc in result) {
+                    val nombre = doc.getString("nombre") ?: "Hospital"
+                    listaHospitalesNombres.add(nombre)
+                    listaHospitalesIds.add(doc.id)
+                }
+
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaHospitalesNombres)
+                spHospital.adapter = adapter
+
+                spHospital.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        if (position > 0) {
+                            selectedHospitalId = listaHospitalesIds[position]
+                            cargarDoctores(selectedHospitalId)
+                        } else {
+                            selectedHospitalId = ""
+                            limpiarDoctores()
+                        }
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                }
+            }
+    }
+
+    private fun cargarDoctores(hospitalId: String) {
+        db.collection("usuarios")
+            .whereEqualTo("rol", 2)
+            .whereEqualTo("hospitalId", hospitalId)
+            .get()
+            .addOnSuccessListener { result ->
+                listaDoctoresNombres.clear()
+                listaDoctoresIds.clear()
+
+                listaDoctoresNombres.add("Seleccione Doctor")
+                listaDoctoresIds.add("")
+
+                for (doc in result) {
+                    val nombre = doc.getString("nombre") ?: ""
+                    val apellidos = doc.getString("apellidos") ?: ""
+                    val nombreDoc = "$nombre $apellidos".trim()
+                    val nombreFinal = if (nombreDoc.isNotEmpty()) nombreDoc else "Doctor"
+
+                    val especialidad = doc.getString("especialidad") ?: "General"
+
+                    listaDoctoresNombres.add("$nombreFinal ($especialidad)")
+                    listaDoctoresIds.add(doc.id)
+                }
+
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaDoctoresNombres)
+                spDoctor.adapter = adapter
+
+                spDoctor.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        selectedDoctorId = if (position > 0) listaDoctoresIds[position] else ""
+                        spHorarios.adapter = null
+                        if (fechaSeleccionadaFormato.isNotEmpty() && selectedDoctorId.isNotEmpty()) {
+                            cargarHorariosDisponibles()
+                        }
+                    }
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                }
+            }
+    }
+
+    private fun limpiarDoctores() {
+        listaDoctoresNombres.clear()
+        listaDoctoresNombres.add("Seleccione primero un hospital")
+        spDoctor.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, listaDoctoresNombres)
+    }
+
+    // --- LÓGICA DE HORARIOS ---
+
+    private fun cargarHorariosDisponibles() {
+        Toast.makeText(this, "Consultando agenda...", Toast.LENGTH_SHORT).show()
+        val agendaId = "${selectedDoctorId}_$fechaSeleccionadaFormato"
+
+        db.collection("agenda_doctores").document(agendaId).get()
+            .addOnSuccessListener { doc ->
+                if (!doc.exists() || doc.getBoolean("esDiaLibre") == true) {
+                    mostrarSinHorarios("El doctor no labora este día")
+                    return@addOnSuccessListener
+                }
+
+                val inicio = doc.getString("horaInicio") ?: "09:00"
+                val fin = doc.getString("horaFin") ?: "17:00"
+                val comidaIni = doc.getString("comidaInicio") ?: "14:00"
+                val comidaFin = doc.getString("comidaFin") ?: "15:00"
+
+                db.collection("citas")
+                    .whereEqualTo("doctorId", selectedDoctorId)
+                    .whereEqualTo("fechaAgenda", fechaSeleccionadaFormato)
+                    .get()
+                    .addOnSuccessListener { citasSnap ->
+                        val horasOcupadas = mutableListOf<String>()
+                        for (cita in citasSnap) {
+                            horasOcupadas.add(cita.getString("hora") ?: "")
+                        }
+                        generarListaHoras(inicio, fin, comidaIni, comidaFin, horasOcupadas)
+                    }
+            }
+            .addOnFailureListener {
+                mostrarSinHorarios("Error de conexión")
+            }
+    }
+
+    private fun generarListaHoras(inicio: String, fin: String, comIni: String, comFin: String, ocupadas: List<String>) {
+        val slots = mutableListOf<String>()
+        val startMin = timeToMinutes(inicio)
+        val endMin = timeToMinutes(fin)
+        val lunchStart = timeToMinutes(comIni)
+        val lunchEnd = timeToMinutes(comFin)
+
+        var current = startMin
+        while (current < endMin) {
+            if (current >= lunchStart && current < lunchEnd) {
+                current += 30
+                continue
+            }
+            val horaString = minutesToTime(current)
+            if (!ocupadas.contains(horaString)) {
+                slots.add(horaString)
+            }
+            current += 30
+        }
+
+        if (slots.isEmpty()) {
+            mostrarSinHorarios("Agenda llena hoy")
+        } else {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, slots)
+            spHorarios.adapter = adapter
+            spHorarios.isEnabled = true
+        }
+    }
+
+    private fun mostrarSinHorarios(mensaje: String) {
+        val lista = listOf(mensaje)
+        spHorarios.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, lista)
+        spHorarios.isEnabled = false
+    }
+
+    private fun timeToMinutes(time: String): Int {
+        try {
+            val parts = time.split(":")
+            return parts[0].toInt() * 60 + parts[1].toInt()
+        } catch (e: Exception) { return 0 }
+    }
+
+    private fun minutesToTime(minutes: Int): String {
+        val h = minutes / 60
+        val m = minutes % 60
+        return String.format("%02d:%02d", h, m)
+    }
+
+    // --- GUARDAR CITA ---
+
+    private fun validarYGuardarCita() {
+        if (etTelefono.text.isEmpty() || etCorreo.text.isEmpty() ||
+            selectedDoctorId.isEmpty() || selectedHospitalId.isEmpty() ||
+            !spHorarios.isEnabled || spHorarios.selectedItem == null) {
+            Toast.makeText(this, "Completa todos los datos y selecciona horario", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        btnGuardar.isEnabled = false
+        btnGuardar.text = "Agendando..."
+
+        val citaMap = hashMapOf(
+            "uidUsuario" to (auth.currentUser?.uid ?: ""),
+            "nombrePaciente" to etNombrePaciente.text.toString(),
+            "telefono" to etTelefono.text.toString(),
+            "correo" to etCorreo.text.toString(),
+            "fechaNacimiento" to etFechaNacimiento.text.toString(),
+            "genero" to spGenero.selectedItem.toString(),
+            "esAfiliado" to cbAfiliado.isChecked,
+            "numeroAfiliado" to if (cbAfiliado.isChecked) etNumeroAfiliado.text.toString() else "",
+            "hospitalId" to selectedHospitalId,
+            "hospitalNombre" to spHospital.selectedItem.toString(),
+            "doctorId" to selectedDoctorId,
+            "especialista" to spDoctor.selectedItem.toString(),
+            "tipoCita" to spTipoCita.selectedItem.toString(),
+            "motivo" to etMotivo.text.toString(),
+            "fecha" to etFechaCita.text.toString(),
+            "fechaAgenda" to fechaSeleccionadaFormato,
+            "hora" to spHorarios.selectedItem.toString(),
+            "estado" to "pendiente"
+        )
+
+        db.collection("citas").add(citaMap)
+            .addOnSuccessListener {
+                Toast.makeText(this, "¡Cita Confirmada!", Toast.LENGTH_LONG).show()
+                btnGuardar.isEnabled = true
+                btnGuardar.text = "Agendar Cita"
+                limpiarFormulario()
+                mostrarFormulario(false)
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show()
+                btnGuardar.isEnabled = true
+                btnGuardar.text = "Agendar Cita"
+            }
+    }
+
+    // --- DIÁLOGOS PREMIUM ---
+
+    private fun mostrarSelectorNacimientoPremium() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_fecha_nacimiento, null)
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val npDia = dialogView.findViewById<NumberPicker>(R.id.npDia)
+        val npMes = dialogView.findViewById<NumberPicker>(R.id.npMes)
+        val npAnio = dialogView.findViewById<NumberPicker>(R.id.npAnio)
+        val btnAceptar = dialogView.findViewById<Button>(R.id.btnAceptarFecha)
+        val btnCancelar = dialogView.findViewById<TextView>(R.id.btnCancelarFecha)
+
+        val yearActual = Calendar.getInstance().get(Calendar.YEAR)
+        npAnio.minValue = 1920
+        npAnio.maxValue = yearActual
+        npAnio.value = 2000
+        npAnio.wrapSelectorWheel = false
+
+        val meses = arrayOf("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
+        npMes.minValue = 0
+        npMes.maxValue = 11
+        npMes.displayedValues = meses
+        npMes.value = 0
+
+        npDia.minValue = 1
+        npDia.maxValue = 31
+        npDia.value = 1
+
+        btnAceptar.setOnClickListener {
+            val dia = npDia.value
+            val mes = npMes.value + 1
+            val anio = npAnio.value
+            etFechaNacimiento.setText(String.format("%02d/%02d/%d", dia, mes, anio))
+            dialog.dismiss()
+        }
+        btnCancelar.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    private fun mostrarCalendarioCitaPremium() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_calendario_premium, null)
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+        val calendarView = dialogView.findViewById<CalendarView>(R.id.calendarViewPremium)
+        val btnConfirmar = dialogView.findViewById<Button>(R.id.btnConfirmarCal)
+        val btnCancelar = dialogView.findViewById<TextView>(R.id.btnCancelarCal)
+
+        calendarView.minDate = System.currentTimeMillis() - 1000
+
+        var anioSel = Calendar.getInstance().get(Calendar.YEAR)
+        var mesSel = Calendar.getInstance().get(Calendar.MONTH)
+        var diaSel = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+        calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            anioSel = year
+            mesSel = month
+            diaSel = dayOfMonth
+        }
+
+        btnConfirmar.setOnClickListener {
+            val fechaVisual = String.format("%02d/%02d/%d", diaSel, mesSel + 1, anioSel)
+            etFechaCita.setText(fechaVisual)
+            fechaSeleccionadaFormato = String.format(Locale.getDefault(), "%04d-%02d-%02d", anioSel, mesSel + 1, diaSel)
+
+            if (selectedDoctorId.isNotEmpty()) {
+                cargarHorariosDisponibles()
+            } else {
+                Toast.makeText(this, "Fecha lista. Selecciona un doctor.", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+        btnCancelar.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    // --- UTILS ---
+
+    private fun mostrarFormulario(mostrar: Boolean) {
+        layoutDashboard.visibility = if (mostrar) View.GONE else View.VISIBLE
+        layoutFormulario.visibility = if (mostrar) View.VISIBLE else View.GONE
+        if (!mostrar) actualizarDashboard()
+    }
+
+    private fun limpiarFormulario() {
+        etMotivo.setText("")
+        etFechaCita.setText("")
+        spHorarios.adapter = null
+        etFechaNacimiento.setText("")
+    }
+
+    private fun abrirMapa() {
+        val intent = Intent(this, MapsActivity::class.java)
+        startActivityForResult(intent, REQUEST_HOSPITAL)
+    }
+
+    private fun actualizarDashboard() {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("citas")
+            .whereEqualTo("uidUsuario", uid)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { res ->
+                if (!res.isEmpty) {
+                    val doc = res.documents[0]
+                    var especialista = doc.getString("especialista") ?: "Consulta"
+                    especialista = especialista.replace("null", "", ignoreCase = true).trim()
+
+                    val fecha = doc.getString("fecha") ?: "--"
+                    val hora = doc.getString("hora") ?: ""
+
+                    tvDashEspecialista.text = "$especialista $hora"
+                    tvDashFecha.text = fecha
+                } else {
+                    tvDashEspecialista.text = "Sin citas programadas"
+                    tvDashFecha.text = "--/--"
+                }
+            }
+    }
+
+    // --- NAVEGACIÓN Y MENU ---
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_carnet -> {
-                val intent = Intent(this, CarnetActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.nav_tratamientos -> {
-                mostrarMenuTratamientos()
-            }
-            R.id.nav_inicio -> Toast.makeText(this, "Ya estás en Inicio", Toast.LENGTH_SHORT).show()
+            R.id.nav_carnet -> startActivity(Intent(this, ExpedientePacienteActivity::class.java))
+            R.id.nav_historial -> startActivity(Intent(this, HistorialCitasActivity::class.java))
+            R.id.nav_tratamientos -> startActivity(Intent(this, TratamientosActivity::class.java))
+            R.id.nav_inicio -> mostrarFormulario(false)
             R.id.nav_salir -> {
-                // Opcional: Cerrar sesión
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
+                auth.signOut()
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
         }
@@ -189,294 +530,9 @@ class MenuActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    // =========================================================================
-    //   SECCIÓN DE TRATAMIENTOS (RESTAURADA)
-    // =========================================================================
-
-    // 1. DASHBOARD DE TRATAMIENTOS
-    private fun mostrarMenuTratamientos() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_menu_tratamientos, null)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setCancelable(true)
-            .create()
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        val btnVer = dialogView.findViewById<Button>(R.id.btnVerLista)
-        val btnAgregar = dialogView.findViewById<Button>(R.id.btnAgregarNuevo)
-        val btnCancelar = dialogView.findViewById<TextView>(R.id.btnCancelarMenu)
-
-        btnVer.setOnClickListener {
-            dialog.dismiss()
-            cargarTratamientosDeFirebase()
-        }
-
-        btnAgregar.setOnClickListener {
-            dialog.dismiss()
-            mostrarDialogoAgregarTratamiento()
-        }
-
-        btnCancelar.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    // 2. FORMULARIO PARA AGREGAR
-    private fun mostrarDialogoAgregarTratamiento() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_agregar_tratamiento, null)
-
-        val etMed = dialogView.findViewById<EditText>(R.id.etDialogMedicamento)
-        val etDosis = dialogView.findViewById<EditText>(R.id.etDialogDosis)
-        val etFrecuencia = dialogView.findViewById<EditText>(R.id.etDialogFrecuencia)
-        val etDuracion = dialogView.findViewById<EditText>(R.id.etDialogDuracion)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setCancelable(false)
-            .setPositiveButton(null, null)
-            .setNegativeButton("Cancelar", null)
-            .create()
-
-        dialog.show()
-
-        val botonGuardar = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        botonGuardar.text = "GUARDAR TRATAMIENTO"
-        botonGuardar.setTextColor(resources.getColor(android.R.color.holo_purple))
-
-        botonGuardar.setOnClickListener {
-            val nombre = etMed.text.toString()
-            val dosis = etDosis.text.toString()
-            val horasStr = etFrecuencia.text.toString()
-            val duracion = etDuracion.text.toString()
-
-            if (nombre.isNotEmpty() && horasStr.isNotEmpty()) {
-                guardarTratamientoFirebase(nombre, dosis, horasStr, duracion)
-                dialog.dismiss()
-            } else {
-                if (nombre.isEmpty()) etMed.error = "Requerido"
-                if (horasStr.isEmpty()) etFrecuencia.error = "Requerido"
-                Toast.makeText(this, "Completa los campos obligatorios", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    // 3. GUARDAR TRATAMIENTO Y ALARMA
-    private fun guardarTratamientoFirebase(nombre: String, dosis: String, horas: String, duracion: String) {
-        val tratamiento = hashMapOf(
-            "medicamento" to nombre,
-            "dosis" to dosis,
-            "frecuencia_horas" to horas,
-            "duracion" to duracion
-        )
-
-        db.collection("tratamientos")
-            .add(tratamiento)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Tratamiento guardado", Toast.LENGTH_SHORT).show()
-                programarAlarma(nombre, dosis, horas.toInt())
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun programarAlarma(nombre: String, dosis: String, horas: Int) {
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(this, RecordatorioReceiver::class.java).apply {
-            putExtra("MEDICAMENTO", nombre)
-            putExtra("DOSIS", dosis)
-        }
-
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            nombre.hashCode(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val intervaloMillis = horas * 60 * 60 * 1000L
-        val triggerTime = System.currentTimeMillis() + intervaloMillis
-
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            triggerTime,
-            intervaloMillis,
-            pendingIntent
-        )
-
-        Toast.makeText(this, "¡Recordatorio activado cada $horas horas!", Toast.LENGTH_LONG).show()
-    }
-
-    // 4. VER TRATAMIENTOS (CARGA Y LISTA PREMIUM)
-    private fun cargarTratamientosDeFirebase() {
-        db.collection("tratamientos").get()
-            .addOnSuccessListener { result ->
-                val listaDatos = ArrayList<HashMap<String, String>>()
-
-                for (doc in result) {
-                    val mapa = hashMapOf(
-                        "medicamento" to (doc.getString("medicamento") ?: "Sin nombre"),
-                        "dosis" to (doc.getString("dosis") ?: "--"),
-                        "frecuencia" to (doc.getString("frecuencia_horas") ?: "0"),
-                        "duracion" to (doc.getString("duracion") ?: "--")
-                    )
-                    listaDatos.add(mapa)
-                }
-
-                if (listaDatos.isEmpty()) {
-                    Toast.makeText(this, "No tienes tratamientos activos", Toast.LENGTH_SHORT).show()
-                } else {
-                    mostrarDialogoListaPremium(listaDatos)
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Error al cargar datos", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-    private fun mostrarDialogoListaPremium(listaDatos: ArrayList<HashMap<String, String>>) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_lista_tratamientos, null)
-        val contenedorItems = dialogView.findViewById<LinearLayout>(R.id.contenedorTratamientos)
-        val btnCerrar = dialogView.findViewById<Button>(R.id.btnCerrarLista)
-
-        for (dato in listaDatos) {
-            val itemView = layoutInflater.inflate(R.layout.item_tratamiento, null)
-
-            val tvNombre = itemView.findViewById<TextView>(R.id.tvNombreMed)
-            val tvDosis = itemView.findViewById<TextView>(R.id.tvDosisMed)
-            val tvFrecuencia = itemView.findViewById<TextView>(R.id.tvFrecuenciaMed)
-
-            tvNombre.text = dato["medicamento"]
-            tvDosis.text = "Dosis: ${dato["dosis"]}"
-            tvFrecuencia.text = "Cada ${dato["frecuencia"]} horas (${dato["duracion"]})"
-
-            contenedorItems.addView(itemView)
-        }
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setCancelable(true)
-            .create()
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-        btnCerrar.setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-    // =========================================================================
-    //   SECCIÓN DE CITAS (LÓGICA ACTUALIZADA CON SQLITE)
-    // =========================================================================
-
-    private fun guardarCitaEnFirebase() {
-        val nombre = etNombrePaciente!!.text.toString()
-        val tipo = etTipoCita!!.text.toString()
-        val esp = spEspecialista!!.selectedItem.toString()
-        val fecha = etFechaCita!!.text.toString()
-        val hora = etHoraCita!!.text.toString()
-        val sexo = spSexo!!.selectedItem.toString()
-        val sangre = spTipoSangre!!.selectedItem.toString()
-        val peso = etPeso!!.text.toString()
-        val altura = etAltura!!.text.toString()
-        val alergias = etAlergias!!.text.toString()
-
-        if (tipo.isEmpty() || fecha.isEmpty() || hora.isEmpty()) {
-            Toast.makeText(this, "Faltan datos obligatorios", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        // 1. Guardar en Firebase
-        val cita = hashMapOf(
-            "nombrePaciente" to nombre,
-            "especialista" to esp,
-            "tipoCita" to tipo,
-            "fecha" to fecha,
-            "hora" to hora,
-            "sexo" to sexo,
-            "tipoSangre" to sangre,
-            "peso" to peso,
-            "altura" to altura,
-            "alergias" to alergias,
-            "hospitalNombre" to hospitalNombre,
-            "hospitalDireccion" to hospitalDireccion,
-            "hospitalTelefono" to hospitalTelefono,
-            "hospitalHorario" to hospitalHorario
-        )
-
-        db.collection("citas").add(cita)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Cita Agendada en Firebase", Toast.LENGTH_SHORT).show()
-            }
-
-        // 2. Guardar en SQLite (Base de datos local)
-        val exito = dbHelper.agregarCita(
-            nombre, esp, tipo, fecha, hora,
-            sexo, sangre, peso, altura, alergias,
-            hospitalNombre, hospitalDireccion, hospitalTelefono, hospitalHorario
-        )
-        if (exito) Toast.makeText(this, "Cita guardada en SQLite también", Toast.LENGTH_SHORT).show()
-
-        // Limpiar campos
-        etTipoCita!!.setText("")
-        etFechaCita!!.setText("")
-        etHoraCita!!.setText("")
-        etPeso!!.setText("")
-        etAltura!!.setText("")
-        etAlergias!!.setText("")
-    }
-
-    private fun mostrarHistorialCitas() {
-        db.collection("citas").get().addOnSuccessListener { res ->
-            val lista = ArrayList<String>()
-            for (doc in res) {
-                val cita = doc.toObject(Cita::class.java)
-                lista.add("Paciente: ${cita.nombrePaciente}\n${cita.especialista}\n${cita.fecha} - ${cita.hora}")
-            }
-            if (lista.isEmpty()) Toast.makeText(this, "Sin historial", Toast.LENGTH_SHORT).show()
-            else mostrarListaSimple(lista)
-        }
-    }
-
-    private fun mostrarListaSimple(lista: ArrayList<String>) {
-        AlertDialog.Builder(this)
-            .setTitle("Historial de Citas")
-            .setItems(lista.toTypedArray(), null)
-            .setPositiveButton("Cerrar", null)
-            .show()
-    }
-
-    // --- UTILIDADES ---
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawer(GravityCompat.START)
+        if (layoutFormulario.visibility == View.VISIBLE) mostrarFormulario(false)
+        else if (drawerLayout.isDrawerOpen(GravityCompat.START)) drawerLayout.closeDrawer(GravityCompat.START)
         else super.onBackPressed()
-    }
-
-    private fun mostrarDatePicker() {
-        val c = Calendar.getInstance()
-        DatePickerDialog(
-            this,
-            { _, y, m, d ->
-                etFechaCita?.setText(String.format("%02d/%02d/%d", d, m + 1, y))
-            },
-            c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
-        ).show()
-    }
-
-    private fun mostrarTimePicker() {
-        val c = Calendar.getInstance()
-        TimePickerDialog(
-            this,
-            { _, h, m ->
-                etHoraCita?.setText(String.format("%02d:%02d", h, m))
-            },
-            c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true
-        ).show()
     }
 }

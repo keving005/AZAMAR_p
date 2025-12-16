@@ -1,5 +1,6 @@
 package com.example.proyect
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,7 +13,6 @@ class PacientesActivity : AppCompatActivity() {
     private lateinit var rvPacientes: RecyclerView
     private val listaPacientes = mutableListOf<Usuario>()
     private lateinit var adapter: PacientesAdapter
-
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,19 +24,33 @@ class PacientesActivity : AppCompatActivity() {
         rvPacientes = findViewById(R.id.rvPacientes)
         rvPacientes.layoutManager = LinearLayoutManager(this)
 
-        // Configuramos el adaptador solo con la acción de afiliación
-        adapter = PacientesAdapter(listaPacientes) { usuario, isChecked ->
-            actualizarAfiliacionFirebase(usuario)
-        }
+        // Inicializamos el Adapter
+        adapter = PacientesAdapter(
+            listaUsuarios = listaPacientes,
+
+            // ACCIÓN 1: CAMBIAR SWITCH DE AFILIADO
+            onAfiliadoChanged = { usuario, isChecked ->
+                actualizarAfiliacionFirebase(usuario)
+            },
+
+            // ACCIÓN 2: CLIC EN BOTÓN EXPEDIENTE
+            onExpedienteClick = { usuario ->
+                val intent = Intent(this, CrearExpedienteActivity::class.java)
+                intent.putExtra("PACIENTE_ID", usuario.uid)
+                // CORRECCIÓN: Solo mandamos el nombre, borramos apellidos
+                intent.putExtra("PACIENTE_NOMBRE", usuario.nombre)
+                startActivity(intent)
+            }
+        )
+
         rvPacientes.adapter = adapter
 
         cargarPacientes()
     }
 
     private fun cargarPacientes() {
-        // Traer solo usuarios con rol 1 (Pacientes)
         db.collection("usuarios")
-            .whereEqualTo("rol", 1)
+            .whereEqualTo("rol", 1) // Solo pacientes
             .get()
             .addOnSuccessListener { documents ->
                 listaPacientes.clear()
@@ -63,12 +77,14 @@ class PacientesActivity : AppCompatActivity() {
                 )
             )
             .addOnSuccessListener {
-                if(usuario.esAfiliado) {
+                if (usuario.esAfiliado) {
                     Toast.makeText(this, "Afiliado generado: ${usuario.numeroAfiliacion}", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Afiliación cancelada", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error al guardar cambio", Toast.LENGTH_SHORT).show()
             }
     }
 }

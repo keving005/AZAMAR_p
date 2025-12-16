@@ -5,24 +5,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
-
-    <View
-        android:id="@+id/headerBackground"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:background="@drawable/header_doctor_shape"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="#F5F7FA"> <View
+    android:id="@+id/headerBackground"
+    android:layout_width="match_parent"
+    android:layout_height="220dp"
+    android:background="@drawable/bg_header_doctor"
+    app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvBienvenidaLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bienvenido Dr,"
-        android:textColor="#E0E0E0"
-        android:textSize="20sp"
+        android:text="Panel Médico"
+        android:textColor="#B2DFDB"
+        android:textSize="14sp"
+        android:letterSpacing="0.1"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,26 +29,38 @@
         android:id="@+id/tvDoctorName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="Dr. Simi"
+        tools:text="Dr. Especialista"
         android:textColor="#FFFFFF"
-        android:textSize="36sp"
+        android:textSize="28sp"
         android:textStyle="bold"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintStart_toStartOf="@id/tvBienvenidaLabel"
         app:layout_constraintTop_toBottomOf="@id/tvBienvenidaLabel"
-        app:layout_constraintEnd_toStartOf="@+id/cardImagenDoctor"
-        app:layout_constraintWidth_percent="0.6"/>
+        app:layout_constraintEnd_toStartOf="@+id/cardImagenDoctor" />
+
+    <TextView
+        android:id="@+id/tvFechaHoy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gestión de Pacientes"
+        android:textColor="#E0F2F1"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDoctorName"
+        app:layout_constraintStart_toStartOf="@+id/tvDoctorName"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardImagenDoctor"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="48dp"
-        app:cardCornerRadius="50dp"
+        app:cardCornerRadius="40dp"
         app:cardElevation="8dp"
+        app:cardBackgroundColor="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/headerBackground"
+        app:layout_constraintTop_toTopOf="@+id/headerBackground"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintVertical_bias="0.6">
 
         <ImageView
             android:id="@+id/ivDoctorAvatar"
@@ -57,44 +68,29 @@
             android:layout_height="match_parent"
             android:src="@drawable/doctor_avatar"
             android:scaleType="centerCrop"
-            tools:src="@android:drawable/sym_def_app_icon"
-            android:contentDescription="Avatar Doctor"/>
+            android:padding="2dp"
+            tools:src="@android:drawable/sym_def_app_icon"/>
     </androidx.cardview.widget.CardView>
 
-
-    <TextView
-        android:id="@+id/tvMotivation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="“Hoy es un día excelente\npara salvar vidas”"
-        android:textColor="#EF6C00"
-        android:textSize="28sp"
-        android:textStyle="italic|bold"
-        android:fontFamily="sans-serif-condensed"
-        android:textAlignment="center"
-        android:layout_marginTop="40dp"
-        android:layout_marginHorizontal="32dp"
-        app:layout_constraintTop_toBottomOf="@id/headerBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <LinearLayout
+    <GridLayout
+        android:id="@+id/gridOpciones"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="40dp"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintTop_toBottomOf="@id/tvMotivation">
+        android:columnCount="2"
+        android:rowCount="1"
+        android:padding="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/headerBackground">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCitasAgendadas"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="12dp"
-            app:cardBackgroundColor="#D81B60"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="10dp"
+            android:layout_height="160dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -103,33 +99,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="16dp">
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@android:drawable/ic_menu_agenda"
-                    app:tint="#FFFFFF"
-                    android:layout_marginBottom="8dp"/>
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_lista_redonda"
+                    android:backgroundTint="#FCE4EC"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="#D81B60"/>
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pacientes"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textColor="#37474F"
+                    android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ver citas y consultas"
+                    android:textSize="12sp"
+                    android:textColor="#90A4AE"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardAgenda"
             android:layout_width="0dp"
-            android:layout_height="150dp"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            app:cardBackgroundColor="#00897B"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="10dp"
+            android:layout_height="160dp"
+            android:layout_columnWeight="1"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -138,35 +149,90 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:padding="16dp">
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="#FFFFFF"
-                    android:layout_marginBottom="8dp"/>
+                android:padding="20dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/bg_lista_redonda"
+                    android:backgroundTint="#E0F2F1"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        app:tint="#00897B"/>
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Agenda"
-                    android:textColor="#FFFFFF"
+                    android:text="Mi Horario"
                     android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textColor="#37474F"
+                    android:layout_marginTop="16dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Configurar disponibilidad"
+                    android:textSize="12sp"
+                    android:textColor="#90A4AE"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+    </GridLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="#FFF3E0"
+        app:strokeColor="#FFE0B2"
+        app:strokeWidth="1dp"
+        app:layout_constraintTop_toBottomOf="@id/gridOpciones">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@android:drawable/btn_star_big_on"
+                app:tint="#FB8C00"/>
+
+            <TextView
+                android:id="@+id/tvMotivation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="“Hoy es un día excelente para salvar vidas”"
+                android:textColor="#E65100"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:layout_marginStart="16dp"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabSalir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:src="@android:drawable/ic_lock_power_off"
-        app:backgroundTint="#C62828"
-        app:tint="#FFFFFF"
+        android:text="Cerrar Sesión"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        app:icon="@android:drawable/ic_lock_power_off"
+        app:iconTint="#FFFFFF"
+        app:backgroundTint="#D32F2F"
+        app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Salir" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

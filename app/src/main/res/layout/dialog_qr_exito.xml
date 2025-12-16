@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Receta Generada!"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#00C853"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Muestra este código en farmacia"
+        android:textColor="#757575"
+        android:layout_marginBottom="24dp"/>
+
+    <ImageView
+        android:id="@+id/ivQrGenerado"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginBottom="24dp"
+        android:scaleType="fitCenter"/>
+
+    <Button
+        android:id="@+id/btnCerrarReceta"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Finalizar y Salir"
+        android:backgroundTint="#1A237E"/>
+
+</LinearLayout>

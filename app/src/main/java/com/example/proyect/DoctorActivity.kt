@@ -7,8 +7,11 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton // IMPORTANTE: Cambio aquí
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class DoctorActivity : AppCompatActivity() {
 
@@ -16,45 +19,39 @@ class DoctorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_doctor)
 
-        // 1. VINCULAR LAS VISTAS (IDs del XML Premium)
+        // 1. VINCULAR LAS VISTAS
         val tvNombreDoctor = findViewById<TextView>(R.id.tvDoctorName)
+        val tvFechaHoy = findViewById<TextView>(R.id.tvFechaHoy) // Nuevo campo opcional
         val cardCitas = findViewById<MaterialCardView>(R.id.cardCitasAgendadas)
         val cardAgenda = findViewById<MaterialCardView>(R.id.cardAgenda)
-        val btnSalir = findViewById<FloatingActionButton>(R.id.fabSalir)
+        // OJO: Ahora es ExtendedFloatingActionButton para que tenga texto "Cerrar sesión"
+        val btnSalir = findViewById<ExtendedFloatingActionButton>(R.id.fabSalir)
         val imgAvatar = findViewById<ImageView>(R.id.ivDoctorAvatar)
 
-        // 2. RECIBIR DATOS DEL LOGIN
-        // Si no llega el nombre, ponemos "Doctor" por defecto.
+        // 2. RECIBIR DATOS
         val nombreRecibido = intent.getStringExtra("NOMBRE_USUARIO") ?: "Colega"
-
-        // Asignamos el nombre al TextView grande
         tvNombreDoctor.text = nombreRecibido
 
-        // 3. FUNCIONALIDAD DE LOS BOTONES
+        // Poner fecha actual bonita debajo del nombre
+        val fecha = SimpleDateFormat("EEEE, d 'de' MMMM", Locale("es", "ES")).format(Date())
+        tvFechaHoy.text = fecha.capitalize()
 
-        // --- Botón Rosa: Ver Pacientes ---
+        // 3. LISTENERS
+
         cardCitas.setOnClickListener {
             startActivity(Intent(this, DoctorCitasActivity::class.java))
         }
 
-        // --- Botón Turquesa: Agenda ---
         cardAgenda.setOnClickListener {
-            // Abrir la pantalla de configuración de agenda
-            val intent = Intent(this, DoctorAgendaActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, DoctorAgendaActivity::class.java))
         }
 
-        // --- Clic en la foto (Opcional) ---
         imgAvatar.setOnClickListener {
-            Toast.makeText(this, "Perfil del Dr. $nombreRecibido", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Perfil médico activo", Toast.LENGTH_SHORT).show()
         }
 
-        // --- Botón Flotante: Salir ---
         btnSalir.setOnClickListener {
-            // 1. Cerrar sesión en Firebase
             FirebaseAuth.getInstance().signOut()
-
-            // 2. Regresar al Login y borrar historial para que no puedan volver atrás
             val intent = Intent(this, AuthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

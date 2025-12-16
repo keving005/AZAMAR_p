@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="hospital_primary">#1A237E</color> <color name="hospital_primary_dark">#000051</color>
-    <color name="hospital_accent">#00BFA5</color> <color name="background_light">#F5F7FA</color> <color name="text_dark">#263238</color> <color name="text_secondary">#78909C</color> <color name="white">#FFFFFF</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="hospital_primary">#1A237E</color>
+    <color name="hospital_primary_dark">#000051</color>
+    <color name="hospital_accent">#00BFA5</color>
+    <color name="background_light">#F5F7FA</color>
+    <color name="text_dark">#263238</color>
+    <color name="text_secondary">#78909C</color>
     <color name="logout_red">#D32F2F</color>
+
+    <color name="premium_bg">#F4F7FE</color>
+    <color name="premium_green_dark">#059669</color>
+    <color name="premium_green_light">#34D399</color>
+    <color name="premium_text_main">#1E293B</color>
+    <color name="premium_text_sec">#64748B</color>
+    <color name="premium_card_bg">#FFFFFF</color>
+    <color name="premium_accent">#10B981</color>
+
+    <color name="medical_primary">@color/premium_green_dark</color>
+    <color name="medical_secondary">@color/premium_green_light</color>
+    <color name="medical_accent">@color/premium_accent</color>
+    <color name="medical_background">@color/premium_bg</color>
+    <color name="premium_purple">#512DA8</color>
+    <color name="premium_purple_light">#7E57C2</color>
+    <color name="premium_bg_gray">#F3F4F6</color>
+    <color name="card_blue_light">#E3F2FD</color>
+    <color name="text_dark_gray">#37474F</color>
 </resources>

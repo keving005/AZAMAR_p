@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,21 +22,13 @@
         tools:replace="android:allowBackup">
 
         <activity
+            android:name=".FarmaciaAdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".DoctoresActivity"
             android:exported="false" />
-
         <activity
             android:name=".PacientesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DetalleCitaActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".DoctorCitasActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DoctorAgendaActivity"
             android:exported="false" />
         <activity
             android:name=".HospitalActivity"
@@ -43,6 +36,21 @@
         <activity
             android:name=".DoctorActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".DetalleCitaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DoctorCitasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DoctorAgendaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".CrearRecetaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".MainActivity"
@@ -58,16 +66,24 @@
             android:name=".AuthActivity"
             android:exported="false" />
         <activity
-            android:name=".SegundaFor"
-            android:exported="false" />
-        <activity
             android:name=".RegistroActivity"
             android:exported="false" />
+        <activity
+            android:name=".SegundaFor"
+            android:exported="false" />
+
         <activity
             android:name=".MenuActivity"
             android:exported="false" />
         <activity
             android:name=".MapsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CarnetActivity"
+            android:exported="false"
+            android:label="Carnet Médico" />
+        <activity
+            android:name=".FarmaciaPacienteActivity"
             android:exported="false" />
 
         <receiver
@@ -78,11 +94,33 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDnXy-sp4qOEsmK2P4BSv3g6gkAfUhKGIg" />
-
         <activity
-            android:name=".CarnetActivity"
+            android:name=".MisRecetasActivity"
             android:exported="false"
-            android:label="Carnet Médico" />
+            android:label="Mis Recetas"/>
+        <activity
+            android:name=".DetalleRecetaPacienteActivity"
+            android:exported="false"
+            android:label="Detalle Receta"/>
+        <activity
+            android:name=".ExpedientePacienteActivity"
+            android:exported="false"
+            android:label="Expediente Clínico" />
+        <activity
+            android:name=".CrearExpedienteActivity"
+            android:exported="false"
+            android:label="Editar Expediente"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".TratamientosActivity"
+            android:exported="false"
+            android:label="Mis Tratamientos"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".HistorialCitasActivity"
+            android:exported="false"
+            android:label="Historial Médico" />
+
     </application>
 
 </manifest>
