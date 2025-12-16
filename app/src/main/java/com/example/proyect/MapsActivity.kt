@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.Polyline
@@ -27,6 +28,12 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.PolyUtil
 import org.json.JSONObject
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import androidx.core.content.ContextCompat
+import com.example.proyect.dao.HospitalDAO
+import com.google.android.gms.maps.model.BitmapDescriptor
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -53,18 +60,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val telefono: String,
         val horario: String
     )
-        private val hospitales = listOf(
-            // Hospitales privados en Chalco
-            Hospital("Hospital SAME Chalco", 19.2687548, -98.8941361, "Av. Cuauhtémoc No. 15, San Miguel Jacalones, Chalco de Díaz Covarrubias, Méx.", "55-1734-0930", "24 hrs"),
-    Hospital("Hospital de Maria", 19.2616433, -98.8903132, "Calle Centro, Chalco de Díaz Covarrubias, Méx.", "55-5975-5886", "Horario local"),
-    Hospital("Clínica Altius Chalco", 19.2600, -98.8890, "Privada Cerrada s/n, Agostadero, 56615 Valle de Chalco Solidaridad, Méx.", "55-3091-5133", "Horario local"),
-    Hospital("Clínica Santa Anita", 19.2500, -98.8660, "Avenida Alfredo del Mazo, Santa Cruz, 56617 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
-    Hospital("Central Médica Santa Cruz", 19.2510, -98.8665, "Calle Norte 9, Santa Cruz, 56617 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
-    Hospital("Sanatorio Providencia", 19.2520, -98.8670, "Calle Norte 1, Providencia, 56616 Valle de Chalco Solidaridad, Méx.", "N/A", "Horario local"),
-    Hospital("Clínica Santa Ana Yareni", 19.2490, -98.8680, "Avenida Solidaridad (Tejones), El Triunfo, 56600 Chalco, Méx.", "N/A", "Horario local"),
-    Hospital("Clínica Del Valle", 19.2550, -98.8655, "Avenida Emiliano Zapata, San Isidro, 56608 Chalco, Méx.", "N/A", "Horario local"),
-    Hospital("Clínica Cambios Salud Integral", 19.2560, -98.8640, "Av. Moctezuma, San Miguel Xico II Sección, 56600 Chalco, Méx.", "N/A", "Horario local")
-    )
+    private lateinit var hospitales: List<Hospital>
+
 
 
 
@@ -72,6 +69,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+        val dbHelper = HospitalDBHelper(this)
+        val hospitalDAO = HospitalDAO(dbHelper)
+        hospitales = hospitalDAO.obtenerHospitales()
 
         // Vincular vistas
         txtNombre = findViewById(R.id.txtNombreHospital)
@@ -111,13 +112,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         hospitales.forEach { hospital ->
             val marker = mMap.addMarker(
                 MarkerOptions().position(LatLng(hospital.lat, hospital.lng)).title(hospital.nombre)
+                    .icon(bitmapDescriptorFromVector(R.drawable.ic_hospital))
+
             )
             marker?.tag = hospital
         }
 
         // Centrar cámara en primer hospital
         val primerHospital = hospitales[0]
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(primerHospital.lat, primerHospital.lng), 12f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(primerHospital.lat, primerHospital.lng), 10f))
 
         // Activar ubicación
         activarUbicacion()
@@ -152,7 +155,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         fusedLocation.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 miUbicacion = LatLng(location.latitude, location.longitude)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(miUbicacion!!, 15f))
+//                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(miUbicacion!!, 10f))
             } else {
                 Toast.makeText(this, "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show()
             }
@@ -204,4 +207,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             activarUbicacion()
         }
     }
+    private fun bitmapDescriptorFromVector(vectorResId: Int): BitmapDescriptor {
+        val drawable = androidx.core.content.ContextCompat.getDrawable(this, vectorResId)!!
+        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+
+        val bitmap = android.graphics.Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            android.graphics.Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = android.graphics.Canvas(bitmap)
+        drawable.draw(canvas)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
 }
